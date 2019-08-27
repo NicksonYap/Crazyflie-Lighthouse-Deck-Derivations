@@ -128,16 +128,29 @@ for i=1:increments
 
     s_f = norm(Rp_1 - B_1) + increment;
     
-    [t_f, Rf21_1, Rf21_2, v_error, error] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
-    d21 = Rf21_1 - Rf21_2;
+    [t_f, Rf21_1, Rf21_2, v_error_21, error_21] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
+    d21 = Rf21_2 - Rf21_1;
     
-    fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error, v_error(1), v_error(2), v_error(3));
+    [r_f, Rf31_1, Rf31_2, v_error_31, error_31] = getResultAndErrors(B_1, u, B_3, g, s_f, D_31);
+    d31 = Rf31_2 - Rf31_1;
+    
+    
+    fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error_21, v_error_21(1), v_error_21(2), v_error_21(3), r_f, error_31, v_error_31(1), v_error_31(2), v_error_31(3));
+    
     
     plot3(Rf21_1(1), Rf21_1(2), Rf21_1(3), 'g.-');
     plot3(Rf21_2(1), Rf21_2(2), Rf21_2(3), 'g.-');
     quiver3(Rf21_1(1), Rf21_1(2), Rf21_1(3), d21(1), d21(2), d21(3), 'g');
 
-    plot3(s_f, t_f, error, 'g.-');
+    plot3(s_f, t_f, error_21, 'g.-');
+    
+    
+    
+    plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
+    plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
+    quiver3(Rf31_1(1), Rf31_1(2), Rf31_1(3), d31(1), d31(2), d31(3), 'c');
+
+    plot3(s_f, r_f, error_31, 'c.-');
     
 end
 
