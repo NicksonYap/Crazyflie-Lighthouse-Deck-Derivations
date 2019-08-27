@@ -155,15 +155,16 @@ for i=1:increments
 %     Rf_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
     Rf_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
 
-    k = (Rf_2 - Rf_1) / norm(Rf_2 - Rf_1);
+%     k = (Rf_2 - Rf_1) / norm(Rf_2 - Rf_1);
     
 %     d_n = norm(Rf_2 - Rf_1)
 %     d_n = norm((B_2 + t_f*v) - (B_1 + s_f*u));
 %     d_n = (Rf_2 - Rf_1).' * k;
 %     d_n = (Rf_2 - Rf_1).' * k;
-    d_n = k\(Rf_2 - Rf_1);
+%     d_n = k\(Rf_2 - Rf_1);
     
-    d_n_k = d_n * k;
+%     d_n_k = d_n * k;
+    d_n_k = Rf_2 - Rf_1;
     
 %     d_S = norm(D_21);
 %     q = D_21/norm(D_21);
