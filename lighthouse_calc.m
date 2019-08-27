@@ -66,7 +66,7 @@ fprintf('Distance Between BS 2 & 1: %f\n', norm(B_2 - B_1));
 %% 2 Base Stations, 1 Sensor (Find Shortest Segment between Rays)
 
 
-[Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_1, u, B_2, v);
+[Sc_1, Sc_2, d_c, k, d_c_k] = shortestSegment(B_1, u, B_2, v);
 fprintf('Shortest Distance Between Rays: %f\n', d_c);
 % since Rays from Base Stations should surely touch the Sensor at the same
 % point, the distance here should be zero.

@@ -1,5 +1,5 @@
 
-function [Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_1, u, B_2, v)
+function [Sc_1, Sc_2, d_c, k, d_c_k] = shortestSegment(B_1, u, B_2, v)
     w_0 = B_2 - B_1;
 
     a = dot(v, v);

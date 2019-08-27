@@ -79,17 +79,17 @@ fprintf('Distance Between BS 3 & 2: %f\n', norm(B_2 - B_3));
 %% 2 Base Stations, 1 Sensor (Find Shortest Segment between Rays)
 
 
-[Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_1, u, B_2, v);
+[Sc_1, Sc_2, d_c, k, d_c_k] = shortestSegment(B_1, u, B_2, v);
 fprintf('Shortest Distance Between Rays from BS 1 & 2: %f\n', d_c);
 plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
 quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Shortest Segment vector
 
-[Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_1, u, B_3, g);
+[Sc_1, Sc_2, d_c, k, d_c_k] = shortestSegment(B_1, u, B_3, g);
 fprintf('Shortest Distance Between Rays from BS 1 & 3: %f\n', d_c);
 plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
 quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Shortest Segment vector
 
-[Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_2, v, B_3, g);
+[Sc_1, Sc_2, d_c, k, d_c_k] = shortestSegment(B_2, v, B_3, g);
 fprintf('Shortest Distance Between Rays from BS 2 & 3: %f\n', d_c);
 plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
 quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Shortest Segment vector
