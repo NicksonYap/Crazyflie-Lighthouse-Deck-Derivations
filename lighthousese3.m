@@ -129,7 +129,7 @@ for i=1:increments
     s_f = norm(Rp_1 - B_1) + increment;
     
     w_21 = B_2 - B_1;
-    x = w_21 - D_21 - s_f*u;
+%     x = w_21 - D_21 - s_f*u;
     
 %     t_n = v\(d_S*q + s_f*u - w_21);
 %     t_n = v\(D_21 + s_f*u - w_21);
@@ -139,9 +139,9 @@ for i=1:increments
 %     t_n = (v\u)*s_f + v\(D_21 - w_21);
 %     t_n = (v\u)*s_f + v\(D_21 - w_21); % linear equation
 
-    D_w = D_21 - w_21;
+    Dw_21 = D_21 - w_21;
     m = (v\u);
-    c = v\(D_w);
+    c = v\(Dw_21);
     t_n = m*s_f + c; % linear equation
     
 %     t_n = mldivide(v, (d_S*q + s_f*u - w_21));
@@ -195,7 +195,7 @@ for i=1:increments
 %     c_v = (v\(D_21 - w_21)*v +  w_21 - D_21);
 %     v_error = s_f*m_v + c_v;
     
-    v_error = s_f*(m*v - u) + (c*v - D_w);
+    v_error = s_f*(m*v - u) + (c*v - Dw_21);
     
     error = power( norm( v_error ), 2);
     
