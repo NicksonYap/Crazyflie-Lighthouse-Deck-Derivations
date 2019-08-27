@@ -128,32 +128,32 @@ for i=1:increments
 
     s_f = norm(Rp_1 - B_1) + increment;
     
-    w_0 = B_2 - B_1;
-    x = w_0 - D_21 - s_f*u;
+    w_21 = B_2 - B_1;
+    x = w_21 - D_21 - s_f*u;
     
-%     t_n = v\(d_S*q + s_f*u - w_0);
-%     t_n = v\(D_21 + s_f*u - w_0);
+%     t_n = v\(d_S*q + s_f*u - w_21);
+%     t_n = v\(D_21 + s_f*u - w_21);
 %     t_n = v\(-x);
-%     t_n = v\(s_f*u + D_21 - w_0);
-%     t_n = v\(s_f*u) + v\(D_21 - w_0);
-%     t_n = (v\u)*s_f + v\(D_21 - w_0);
-%     t_n = (v\u)*s_f + v\(D_21 - w_0); % linear equation
+%     t_n = v\(s_f*u + D_21 - w_21);
+%     t_n = v\(s_f*u) + v\(D_21 - w_21);
+%     t_n = (v\u)*s_f + v\(D_21 - w_21);
+%     t_n = (v\u)*s_f + v\(D_21 - w_21); % linear equation
 
-    D_w = D_21 - w_0;
+    D_w = D_21 - w_21;
     m = (v\u);
     c = v\(D_w);
     t_n = m*s_f + c; % linear equation
     
-%     t_n = mldivide(v, (d_S*q + s_f*u - w_0));
-%     t_n = (d_S*q + s_f*u - w_0).' * v;
-%     t_n = (D_21 + s_f*u - w_0).' * v; 
+%     t_n = mldivide(v, (d_S*q + s_f*u - w_21));
+%     t_n = (d_S*q + s_f*u - w_21).' * v;
+%     t_n = (D_21 + s_f*u - w_21).' * v; 
     
     Sn_1 = B_1 + s_f*u;
 %     Sn_2 = B_2 + t_n*v;
-%     Sn_2 = B_2 + ((d_S*q + s_f*u - w_0).' * v)*v;
-%     Sn_2 = B_2 + (d_S*q + s_f*u - w_0).' * v*v;
-%     Sn_2 = B_2 + (D_21 + s_f*u - w_0).' * v*v;
-    Sn_2 = B_2 + (D_21 + s_f*u - w_0).' * v*v;
+%     Sn_2 = B_2 + ((d_S*q + s_f*u - w_21).' * v)*v;
+%     Sn_2 = B_2 + (d_S*q + s_f*u - w_21).' * v*v;
+%     Sn_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
+    Sn_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
 
     k = (Sn_2 - Sn_1) / norm(Sn_2 - Sn_1);
     
@@ -172,27 +172,27 @@ for i=1:increments
 %     error = norm(d_n_k - d_S_q);
 %     error = power(norm(d_n_k - d_S_q), 2);
 %     error = power(norm(d_n_k - D_21), 2);
-%     error = power( norm( w_0 +  t_n*v - s_f*u - D_21 ), 2);
-%     error = power( norm( w_0 +  ( (D_21 + s_f*u - w_0).' * v )*v - s_f*u - D_21 ), 2);
-%     error = power( norm( w_0 +  (D_21 + s_f*u - w_0).' * v*v - s_f*u - D_21 ), 2);
-%     error = power( norm( w_0 +  v\(D_21 + s_f*u - w_0) *v - s_f*u - D_21 ), 2);
+%     error = power( norm( w_21 +  t_n*v - s_f*u - D_21 ), 2);
+%     error = power( norm( w_21 +  ( (D_21 + s_f*u - w_21).' * v )*v - s_f*u - D_21 ), 2);
+%     error = power( norm( w_21 +  (D_21 + s_f*u - w_21).' * v*v - s_f*u - D_21 ), 2);
+%     error = power( norm( w_21 +  v\(D_21 + s_f*u - w_21) *v - s_f*u - D_21 ), 2);
 
 %     error = power( norm( x + v\(-x) *v  ), 2);
 %     error = power( norm( x + t_n *v  ), 2);
-%     error = power( norm( x + ((v\u)*s_f + v\(D_21 - w_0)) *v  ), 2);
-%     error = power( norm( x + (v\u)*v*s_f + v\(D_21 - w_0)*v ), 2);
-%     error = power( norm( x + m*v*s_f + v\(D_21 - w_0)*v ), 2);
+%     error = power( norm( x + ((v\u)*s_f + v\(D_21 - w_21)) *v  ), 2);
+%     error = power( norm( x + (v\u)*v*s_f + v\(D_21 - w_21)*v ), 2);
+%     error = power( norm( x + m*v*s_f + v\(D_21 - w_21)*v ), 2);
     
 %     v_error = x + m*v*s_f + c*v;
-%     v_error = w_0 - D_21 - s_f*u + m*v*s_f + c*v;
-%     v_error = m*v*s_f - s_f*u + c*v +  w_0 - D_21;
-%     v_error = s_f*m*v - s_f*u + (c*v +  w_0 - D_21);
-%     v_error = s_f*(m*v - u) + (c*v +  w_0 - D_21);
+%     v_error = w_21 - D_21 - s_f*u + m*v*s_f + c*v;
+%     v_error = m*v*s_f - s_f*u + c*v +  w_21 - D_21;
+%     v_error = s_f*m*v - s_f*u + (c*v +  w_21 - D_21);
+%     v_error = s_f*(m*v - u) + (c*v +  w_21 - D_21);
     
 %     m_v = (m*v - u);
-%     c_v = (c*v +  w_0 - D_21);
+%     c_v = (c*v +  w_21 - D_21);
 %     m_v = ((v\u)*v - u);
-%     c_v = (v\(D_21 - w_0)*v +  w_0 - D_21);
+%     c_v = (v\(D_21 - w_21)*v +  w_21 - D_21);
 %     v_error = s_f*m_v + c_v;
     
     v_error = s_f*(m*v - u) + (c*v - D_w);
