@@ -38,13 +38,15 @@ text(B_2(1), B_2(2), B_2(3), '2', 'Color', 'r')
 % Rp_2 = [+ 0.1; + 0.1; 1 + 0.1];
 
 Rp_1 = [- 0.1; - 0.1; 1 - 0.1];
-Rp_2 = Rp_1 + [0.03; 0 ; 0];
 
 if RAYS_FAR_APART
-    Rp_2 = Rp_1 + [0.1; 0 ; 0];
+    Rp_2 = Rp_1 + [0.2; 0 ; 0];
+else
+    Rp_2 = Rp_1 + [0.03; 0 ; 0];
 end
 
-plot3(Rp_1(1), Rp_1(2), Rp_1(3), 'k.-', Rp_2(1), Rp_2(2), Rp_2(3), 'k.-'); % plot Artibary point on Ray
+plot3(Rp_1(1), Rp_1(2), Rp_1(3), 'k.-'); % plot Artibary point on Ray
+plot3(Rp_2(1), Rp_2(2), Rp_2(3), 'k.-'); % plot Artibary point on Ray
 
 % Unit Vector of Ray from Base Stations
 u = (Rp_1 - B_1) / norm(Rp_1 - B_1);
@@ -59,16 +61,12 @@ quiver3(B_1(1), B_1(2), B_1(3), R_1(1), R_1(2), R_1(3), 'b'); % plot Rays
 quiver3(B_2(1), B_2(2), B_2(3), R_2(1), R_2(2), R_2(3), 'b');
 
 % distance between Base Stations
-d_B = norm(B_2 - B_1);
-
-fprintf('Distance Between BS: %f\n', d_B);
+fprintf('Distance Between BS 2 & 1: %f\n', norm(B_2 - B_1));
 
 %% 2 Base Stations, 1 Sensor (Find Shortest Segment between Rays)
 
 
 [Sc_1, Sc_2, d_c, k, d_c_k] = shortest_segment(B_1, u, B_2, v);
-
-
 fprintf('Shortest Distance Between Rays: %f\n', d_c);
 % since Rays from Base Stations should surely touch the Sensor at the same
 % point, the distance here should be zero.
