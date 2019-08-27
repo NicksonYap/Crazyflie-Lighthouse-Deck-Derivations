@@ -30,7 +30,7 @@ if SINGLE_BASESTATION
 end
 
 plot3(B_1(1), B_1(2), B_1(3), 'b^-'); % plot Base Station
-text(B_1(1), B_1(2), B_1(3), '1', 'Color', 'g')
+text(B_1(1), B_1(2), B_1(3), '1', 'Color', 'r')
 
 plot3(B_2(1), B_2(2), B_2(3), 'b^-'); % plot Base Station
 text(B_2(1), B_2(2), B_2(3), '2', 'Color', 'r')
@@ -102,40 +102,17 @@ quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Sh
 %%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 %% Calc
 
-w_0 = B_2 - B_1;
+% re-use the points for array as Tracker sensor detections
+% so the error should be zero
 
-d_S = norm(Rp_2 - Rp_1);
-q = (Rp_2 - Rp_1) / norm(Rp_2 - Rp_1);
-d_S_q = d_S*q;
-% D = d_S*q;
 D = Rp_2 - Rp_1;
 
-fprintf('Assumed Distance Between Sensors: %f\n', d_S);
-% fprintf('Sensor Vector: [%f, %f, %f]\n', q(1), q(2), q (3));
+fprintf('Assumed Distance Between Sensors: %f\n', norm(D));
 fprintf('Sensor Vector: \n');
 disp(D);
 
-d_BS1 = norm(Rp_1 - B_1);
-d_BS2 = norm(Rp_2 - B_2);
-fprintf('Sensor_1 Distance from BS_1: %f\n', d_BS1);
-fprintf('Sensor_2 Distance from BS_2: %f\n', d_BS2);
-
-% Sp_1 = B_1 + d_BS1*u
-% Sp_2 = B_2 + d_BS2*v
-
-s_n = d_BS1;
-% t_n = v\(d_S*q + s_n*u - w_0);
-% t_n = mldivide(v, (d_S*q + s_n*u - w_0));
-% t_n = (d_S*q + s_n*u - w_0).' * v ;
-t_n = (D + s_n*u - w_0).' * v; 
-    
-Sn_1 = B_1 + s_n*u;
-Sn_2 = B_2 + t_n*v;
 
 %% Plot Calc
-
-Sn_1_ = Sn_1;
-Sn_2_ = Sn_2;
 
 step_size = 0.05;
 offset = 0;
@@ -145,8 +122,10 @@ for i=1:increments
 %     disp(i)
     increment = (i-increments/2)*step_size + offset;
 
+    d_BS1 = norm(Rp_1 - B_1);
     s_n = d_BS1 + increment;
     
+    w_0 = B_2 - B_1;
     x = w_0 - D - s_n*u;
     
 %     t_n = v\(d_S*q + s_n*u - w_0);
@@ -182,13 +161,10 @@ for i=1:increments
     
     d_n_k = d_n * k;
     
-%     d_error = d_n - d_S;
-    d_error = abs(d_n - d_S);
-%     d_error = sqrt(power(d_n - d_S, 2));
+    d_S = norm(D);
+    q = D/norm(D);
+    % d_S_q = d_S*q;
     
-%     r_error = k - q;
-    r_error = norm(k - q);
-    t_error = d_error*r_error;
     
 %     error = norm(d_n_k - d_S_q);
 %     error = power(norm(d_n_k - d_S_q), 2);
@@ -220,8 +196,7 @@ for i=1:increments
     
     error = power( norm( v_error ), 2);
     
-%     fprintf('%f, %f, %f, %f, %f, %f, %f \n', increment, s_n, t_n, d_n, d_error, r_error, t_error);
-%     fprintf('%f \t %f \t %f \t %f \n', increment, s_n, t_n, error);
+    
     fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_n, t_n, error, v_error(1), v_error(2), v_error(3));
     
     plot3(Sn_1(1), Sn_1(2), Sn_1(3), 'g.-', Sn_2(1), Sn_2(2), Sn_2(3), 'g.-');
@@ -229,40 +204,9 @@ for i=1:increments
 
     plot3(s_n, t_n, error, 'g.-');
     
-    dist1 = norm(Sn_1 - Sn_1_);
-    dist2 = norm(Sn_2 - Sn_2_);
-    
-    Sn_1_ = Sn_1;
-    Sn_2_ = Sn_2;
 end
 
 
-D_w = D - w_0;
-m = (v\u);
-c = v\(D_w);
-
-% t_f = m*s_f + c; % linear equation
-
-a = (m*v - u);
-b = (c*v - D_w);
-
-% v_error = s_f*(m*v - u) + (c*v - D_w); % linear equation
-% v_error = s_f*a + b; % linear equation
-
-% s_no_error_linear = - (m*v - u) \ (c*v - D_w); % assuming v_error = 0, find s_f
-
-% v_error_sequared = power( norm(s_f*a + b), 2); % quadratic equation for reference only, to show derivation
-% v_error_sequared_diffed = 2*a*(a*s_f + b); %squared and differentiated by s_f
-% s_no_error_quadratic = - b / a; % assuming v_error_sequared_diffed = 0, find s_f
-% s_no_error_quadratic = - a \ b
-% s_no_error_quadratic = - (m*v - u) \ (c*v - D_w); % same as s_no_error_linear
-
-    
-% syms W Dd S U V X
-% e = power( norm( W +  V\(Dd + S*U - W) *V - S*U - Dd ), 2);
-% diff(e, S)
-
-% quiver3(S_2(1), S_2(2), S_2(3),-res(1),-res(2),-res(3), 'r');
 
 %% Plot End
 
