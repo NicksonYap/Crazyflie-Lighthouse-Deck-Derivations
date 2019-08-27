@@ -128,13 +128,14 @@ for i=1:increments
 
     s_f = norm(Rp_1 - B_1) + increment;
     
-    [t_f, Rf_1, Rf_2, d_n_k, v_error, error] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
-    
+    [t_f, Rf21_1, Rf21_2, v_error, error] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
+    d21 = Rf21_1 - Rf21_2;
     
     fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error, v_error(1), v_error(2), v_error(3));
     
-    plot3(Rf_1(1), Rf_1(2), Rf_1(3), 'g.-', Rf_2(1), Rf_2(2), Rf_2(3), 'g.-');
-    quiver3(Rf_1(1), Rf_1(2), Rf_1(3), d_n_k(1), d_n_k(2), d_n_k(3), 'g');
+    plot3(Rf21_1(1), Rf21_1(2), Rf21_1(3), 'g.-');
+    plot3(Rf21_2(1), Rf21_2(2), Rf21_2(3), 'g.-');
+    quiver3(Rf21_1(1), Rf21_1(2), Rf21_1(3), d21(1), d21(2), d21(3), 'g');
 
     plot3(s_f, t_f, error, 'g.-');
     

@@ -1,5 +1,5 @@
 
-function [Rf_1, Rf_2, t_f, d_n_k, m_21, c_21, Dw_21] = getComponents(B_1, u, B_2, v, s_f, D_21)
+function [Rf_1, Rf_2, t_f, m_21, c_21, Dw_21] = getComponents(B_1, u, B_2, v, s_f, D_21)
     w_21 = B_2 - B_1;
 %     x = w_21 - D_21 - s_f*u;
     
