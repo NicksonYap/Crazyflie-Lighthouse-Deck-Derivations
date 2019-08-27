@@ -140,9 +140,9 @@ for i=1:increments
 %     t_n = (v\u)*s_f + v\(D_21 - w_21); % linear equation
 
     Dw_21 = D_21 - w_21;
-    m = (v\u);
+    m_21 = (v\u);
     c = v\(Dw_21);
-    t_n = m*s_f + c; % linear equation
+    t_n = m_21*s_f + c; % linear equation
     
 %     t_n = mldivide(v, (d_S*q + s_f*u - w_21));
 %     t_n = (d_S*q + s_f*u - w_21).' * v;
@@ -181,21 +181,21 @@ for i=1:increments
 %     error = power( norm( x + t_n *v  ), 2);
 %     error = power( norm( x + ((v\u)*s_f + v\(D_21 - w_21)) *v  ), 2);
 %     error = power( norm( x + (v\u)*v*s_f + v\(D_21 - w_21)*v ), 2);
-%     error = power( norm( x + m*v*s_f + v\(D_21 - w_21)*v ), 2);
+%     error = power( norm( x + m_21*v*s_f + v\(D_21 - w_21)*v ), 2);
     
-%     v_error = x + m*v*s_f + c*v;
-%     v_error = w_21 - D_21 - s_f*u + m*v*s_f + c*v;
-%     v_error = m*v*s_f - s_f*u + c*v +  w_21 - D_21;
-%     v_error = s_f*m*v - s_f*u + (c*v +  w_21 - D_21);
-%     v_error = s_f*(m*v - u) + (c*v +  w_21 - D_21);
+%     v_error = x + m_21*v*s_f + c*v;
+%     v_error = w_21 - D_21 - s_f*u + m_21*v*s_f + c*v;
+%     v_error = m_21*v*s_f - s_f*u + c*v +  w_21 - D_21;
+%     v_error = s_f*m_21*v - s_f*u + (c*v +  w_21 - D_21);
+%     v_error = s_f*(m_21*v - u) + (c*v +  w_21 - D_21);
     
-%     m_v = (m*v - u);
+%     m_v = (m_21*v - u);
 %     c_v = (c*v +  w_21 - D_21);
 %     m_v = ((v\u)*v - u);
 %     c_v = (v\(D_21 - w_21)*v +  w_21 - D_21);
 %     v_error = s_f*m_v + c_v;
     
-    v_error = s_f*(m*v - u) + (c*v - Dw_21);
+    v_error = s_f*(m_21*v - u) + (c*v - Dw_21);
     
     error = power( norm( v_error ), 2);
     
