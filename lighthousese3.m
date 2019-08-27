@@ -148,24 +148,25 @@ for i=1:increments
 %     t_f = (d_S*q + s_f*u - w_21).' * v;
 %     t_f = (D_21 + s_f*u - w_21).' * v; 
     
-    Sn_1 = B_1 + s_f*u;
-%     Sn_2 = B_2 + t_f*v;
-%     Sn_2 = B_2 + ((d_S*q + s_f*u - w_21).' * v)*v;
-%     Sn_2 = B_2 + (d_S*q + s_f*u - w_21).' * v*v;
-%     Sn_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
-    Sn_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
+    Rf_1 = B_1 + s_f*u;
+%     Rf_2 = B_2 + t_f*v;
+%     Rf_2 = B_2 + ((d_S*q + s_f*u - w_21).' * v)*v;
+%     Rf_2 = B_2 + (d_S*q + s_f*u - w_21).' * v*v;
+%     Rf_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
+    Rf_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
 
-    k = (Sn_2 - Sn_1) / norm(Sn_2 - Sn_1);
+    k = (Rf_2 - Rf_1) / norm(Rf_2 - Rf_1);
     
-%     d_n = norm(Sn_2 - Sn_1)
+%     d_n = norm(Rf_2 - Rf_1)
 %     d_n = norm((B_2 + t_f*v) - (B_1 + s_f*u));
-%     d_n = (Sn_2 - Sn_1).' * k;
-    d_n = (Sn_2 - Sn_1).' * k;
+%     d_n = (Rf_2 - Rf_1).' * k;
+%     d_n = (Rf_2 - Rf_1).' * k;
+    d_n = k\(Rf_2 - Rf_1);
     
     d_n_k = d_n * k;
     
-    d_S = norm(D_21);
-    q = D_21/norm(D_21);
+%     d_S = norm(D_21);
+%     q = D_21/norm(D_21);
     % d_S_q = d_S*q;
     
     
@@ -202,8 +203,8 @@ for i=1:increments
     
     fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error, v_error(1), v_error(2), v_error(3));
     
-    plot3(Sn_1(1), Sn_1(2), Sn_1(3), 'g.-', Sn_2(1), Sn_2(2), Sn_2(3), 'g.-');
-    quiver3(Sn_1(1), Sn_1(2), Sn_1(3), d_n_k(1), d_n_k(2), d_n_k(3), 'g');
+    plot3(Rf_1(1), Rf_1(2), Rf_1(3), 'g.-', Rf_2(1), Rf_2(2), Rf_2(3), 'g.-');
+    quiver3(Rf_1(1), Rf_1(2), Rf_1(3), d_n_k(1), d_n_k(2), d_n_k(3), 'g');
 
     plot3(s_f, t_f, error, 'g.-');
     
