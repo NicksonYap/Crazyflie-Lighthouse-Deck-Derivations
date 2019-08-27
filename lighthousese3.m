@@ -131,25 +131,25 @@ for i=1:increments
     w_21 = B_2 - B_1;
 %     x = w_21 - D_21 - s_f*u;
     
-%     t_n = v\(d_S*q + s_f*u - w_21);
-%     t_n = v\(D_21 + s_f*u - w_21);
-%     t_n = v\(-x);
-%     t_n = v\(s_f*u + D_21 - w_21);
-%     t_n = v\(s_f*u) + v\(D_21 - w_21);
-%     t_n = (v\u)*s_f + v\(D_21 - w_21);
-%     t_n = (v\u)*s_f + v\(D_21 - w_21); % linear equation
+%     t_f = v\(d_S*q + s_f*u - w_21);
+%     t_f = v\(D_21 + s_f*u - w_21);
+%     t_f = v\(-x);
+%     t_f = v\(s_f*u + D_21 - w_21);
+%     t_f = v\(s_f*u) + v\(D_21 - w_21);
+%     t_f = (v\u)*s_f + v\(D_21 - w_21);
+%     t_f = (v\u)*s_f + v\(D_21 - w_21); % linear equation
 
     Dw_21 = D_21 - w_21;
     m_21 = (v\u);
     c_21 = v\(Dw_21);
-    t_n = m_21*s_f + c_21; % linear equation
+    t_f = m_21*s_f + c_21; % linear equation
     
-%     t_n = mldivide(v, (d_S*q + s_f*u - w_21));
-%     t_n = (d_S*q + s_f*u - w_21).' * v;
-%     t_n = (D_21 + s_f*u - w_21).' * v; 
+%     t_f = mldivide(v, (d_S*q + s_f*u - w_21));
+%     t_f = (d_S*q + s_f*u - w_21).' * v;
+%     t_f = (D_21 + s_f*u - w_21).' * v; 
     
     Sn_1 = B_1 + s_f*u;
-%     Sn_2 = B_2 + t_n*v;
+%     Sn_2 = B_2 + t_f*v;
 %     Sn_2 = B_2 + ((d_S*q + s_f*u - w_21).' * v)*v;
 %     Sn_2 = B_2 + (d_S*q + s_f*u - w_21).' * v*v;
 %     Sn_2 = B_2 + (D_21 + s_f*u - w_21).' * v*v;
@@ -158,7 +158,7 @@ for i=1:increments
     k = (Sn_2 - Sn_1) / norm(Sn_2 - Sn_1);
     
 %     d_n = norm(Sn_2 - Sn_1)
-%     d_n = norm((B_2 + t_n*v) - (B_1 + s_f*u));
+%     d_n = norm((B_2 + t_f*v) - (B_1 + s_f*u));
 %     d_n = (Sn_2 - Sn_1).' * k;
     d_n = (Sn_2 - Sn_1).' * k;
     
@@ -172,13 +172,13 @@ for i=1:increments
 %     error = norm(d_n_k - d_S_q);
 %     error = power(norm(d_n_k - d_S_q), 2);
 %     error = power(norm(d_n_k - D_21), 2);
-%     error = power( norm( w_21 +  t_n*v - s_f*u - D_21 ), 2);
+%     error = power( norm( w_21 +  t_f*v - s_f*u - D_21 ), 2);
 %     error = power( norm( w_21 +  ( (D_21 + s_f*u - w_21).' * v )*v - s_f*u - D_21 ), 2);
 %     error = power( norm( w_21 +  (D_21 + s_f*u - w_21).' * v*v - s_f*u - D_21 ), 2);
 %     error = power( norm( w_21 +  v\(D_21 + s_f*u - w_21) *v - s_f*u - D_21 ), 2);
 
 %     error = power( norm( x + v\(-x) *v  ), 2);
-%     error = power( norm( x + t_n *v  ), 2);
+%     error = power( norm( x + t_f *v  ), 2);
 %     error = power( norm( x + ((v\u)*s_f + v\(D_21 - w_21)) *v  ), 2);
 %     error = power( norm( x + (v\u)*v*s_f + v\(D_21 - w_21)*v ), 2);
 %     error = power( norm( x + m_21*v*s_f + v\(D_21 - w_21)*v ), 2);
@@ -200,12 +200,12 @@ for i=1:increments
     error = power( norm( v_error ), 2);
     
     
-    fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_n, error, v_error(1), v_error(2), v_error(3));
+    fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error, v_error(1), v_error(2), v_error(3));
     
     plot3(Sn_1(1), Sn_1(2), Sn_1(3), 'g.-', Sn_2(1), Sn_2(2), Sn_2(3), 'g.-');
     quiver3(Sn_1(1), Sn_1(2), Sn_1(3), d_n_k(1), d_n_k(2), d_n_k(3), 'g');
 
-    plot3(s_f, t_n, error, 'g.-');
+    plot3(s_f, t_f, error, 'g.-');
     
 end
 
