@@ -105,11 +105,11 @@ quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Sh
 % re-use the points for array as Tracker sensor detections
 % so the error should be zero
 
-D = Rp_2 - Rp_1;
+D_21 = Rp_2 - Rp_1;
 
-fprintf('Assumed Distance Between Sensors: %f\n', norm(D));
+fprintf('Assumed Distance Between Sensors: %f\n', norm(D_21));
 fprintf('Sensor Vector: \n');
-disp(D);
+disp(D_21);
 
 
 %% Plot Calc
@@ -126,31 +126,31 @@ for i=1:increments
     s_n = d_BS1 + increment;
     
     w_0 = B_2 - B_1;
-    x = w_0 - D - s_n*u;
+    x = w_0 - D_21 - s_n*u;
     
 %     t_n = v\(d_S*q + s_n*u - w_0);
-%     t_n = v\(D + s_n*u - w_0);
+%     t_n = v\(D_21 + s_n*u - w_0);
 %     t_n = v\(-x);
-%     t_n = v\(s_n*u + D - w_0);
-%     t_n = v\(s_n*u) + v\(D - w_0);
-%     t_n = (v\u)*s_n + v\(D - w_0);
-%     t_n = (v\u)*s_n + v\(D - w_0); % linear equation
+%     t_n = v\(s_n*u + D_21 - w_0);
+%     t_n = v\(s_n*u) + v\(D_21 - w_0);
+%     t_n = (v\u)*s_n + v\(D_21 - w_0);
+%     t_n = (v\u)*s_n + v\(D_21 - w_0); % linear equation
 
-    D_w = D - w_0;
+    D_w = D_21 - w_0;
     m = (v\u);
     c = v\(D_w);
     t_n = m*s_n + c; % linear equation
     
 %     t_n = mldivide(v, (d_S*q + s_n*u - w_0));
 %     t_n = (d_S*q + s_n*u - w_0).' * v;
-%     t_n = (D + s_n*u - w_0).' * v; 
+%     t_n = (D_21 + s_n*u - w_0).' * v; 
     
     Sn_1 = B_1 + s_n*u;
 %     Sn_2 = B_2 + t_n*v;
 %     Sn_2 = B_2 + ((d_S*q + s_n*u - w_0).' * v)*v;
 %     Sn_2 = B_2 + (d_S*q + s_n*u - w_0).' * v*v;
-%     Sn_2 = B_2 + (D + s_n*u - w_0).' * v*v;
-    Sn_2 = B_2 + (D + s_n*u - w_0).' * v*v;
+%     Sn_2 = B_2 + (D_21 + s_n*u - w_0).' * v*v;
+    Sn_2 = B_2 + (D_21 + s_n*u - w_0).' * v*v;
 
     k = (Sn_2 - Sn_1) / norm(Sn_2 - Sn_1);
     
@@ -161,35 +161,35 @@ for i=1:increments
     
     d_n_k = d_n * k;
     
-    d_S = norm(D);
-    q = D/norm(D);
+    d_S = norm(D_21);
+    q = D_21/norm(D_21);
     % d_S_q = d_S*q;
     
     
 %     error = norm(d_n_k - d_S_q);
 %     error = power(norm(d_n_k - d_S_q), 2);
-%     error = power(norm(d_n_k - D), 2);
-%     error = power( norm( w_0 +  t_n*v - s_n*u - D ), 2);
-%     error = power( norm( w_0 +  ( (D + s_n*u - w_0).' * v )*v - s_n*u - D ), 2);
-%     error = power( norm( w_0 +  (D + s_n*u - w_0).' * v*v - s_n*u - D ), 2);
-%     error = power( norm( w_0 +  v\(D + s_n*u - w_0) *v - s_n*u - D ), 2);
+%     error = power(norm(d_n_k - D_21), 2);
+%     error = power( norm( w_0 +  t_n*v - s_n*u - D_21 ), 2);
+%     error = power( norm( w_0 +  ( (D_21 + s_n*u - w_0).' * v )*v - s_n*u - D_21 ), 2);
+%     error = power( norm( w_0 +  (D_21 + s_n*u - w_0).' * v*v - s_n*u - D_21 ), 2);
+%     error = power( norm( w_0 +  v\(D_21 + s_n*u - w_0) *v - s_n*u - D_21 ), 2);
 
 %     error = power( norm( x + v\(-x) *v  ), 2);
 %     error = power( norm( x + t_n *v  ), 2);
-%     error = power( norm( x + ((v\u)*s_n + v\(D - w_0)) *v  ), 2);
-%     error = power( norm( x + (v\u)*v*s_n + v\(D - w_0)*v ), 2);
-%     error = power( norm( x + m*v*s_n + v\(D - w_0)*v ), 2);
+%     error = power( norm( x + ((v\u)*s_n + v\(D_21 - w_0)) *v  ), 2);
+%     error = power( norm( x + (v\u)*v*s_n + v\(D_21 - w_0)*v ), 2);
+%     error = power( norm( x + m*v*s_n + v\(D_21 - w_0)*v ), 2);
     
 %     v_error = x + m*v*s_n + c*v;
-%     v_error = w_0 - D - s_n*u + m*v*s_n + c*v;
-%     v_error = m*v*s_n - s_n*u + c*v +  w_0 - D;
-%     v_error = s_n*m*v - s_n*u + (c*v +  w_0 - D);
-%     v_error = s_n*(m*v - u) + (c*v +  w_0 - D);
+%     v_error = w_0 - D_21 - s_n*u + m*v*s_n + c*v;
+%     v_error = m*v*s_n - s_n*u + c*v +  w_0 - D_21;
+%     v_error = s_n*m*v - s_n*u + (c*v +  w_0 - D_21);
+%     v_error = s_n*(m*v - u) + (c*v +  w_0 - D_21);
     
 %     m_v = (m*v - u);
-%     c_v = (c*v +  w_0 - D);
+%     c_v = (c*v +  w_0 - D_21);
 %     m_v = ((v\u)*v - u);
-%     c_v = (v\(D - w_0)*v +  w_0 - D);
+%     c_v = (v\(D_21 - w_0)*v +  w_0 - D_21);
 %     v_error = s_n*m_v + c_v;
     
     v_error = s_n*(m*v - u) + (c*v - D_w);
