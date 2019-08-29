@@ -76,7 +76,7 @@ fprintf('Shortest Distance Between Rays: %f\n', d_c);
 plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
 quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Shortest Segment vector
 
-%%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
+%%  Tracker Sensor Configuration
 
 % Sensor Positions Relative to Tracker
 
@@ -112,7 +112,7 @@ if SIMULATE_SENSORS_ON_RAY
     D = Sp_2 - Sp_1;
 else
  
-    Rp_1 = [0; 0; 0]; % from origin
+    %    Rp_1 = [0; 0; 0]; % from origin
  
     %    Rp_2 = [1; 0; 0];  % pointing in X
     %    Rp_2 = [0; 1; 0];  % pointing in Y
@@ -147,6 +147,8 @@ end
 fprintf('Assumed Distance Between Sensors: %f\n', norm(D));
 fprintf('Sensor Vector: \n');
 disp(D);
+
+%%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 
 w_0 = B_2 - B_1;
 D_w = D - w_0;
