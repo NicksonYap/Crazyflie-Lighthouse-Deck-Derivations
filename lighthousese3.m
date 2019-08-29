@@ -59,12 +59,13 @@ end
 
 % simulate D vector as if Rays fall directly on both of Sensors (ignores sensor dimensions)
 
+% format long
 
 P_sf = [0; 0; 1];
 
-yaw = 0; % degrees
-pitch = 0;
-roll = 0;
+yaw = 15; % degrees
+pitch = 15;
+roll = 15;
 rot_mat = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
 
 sensor_on_ray_1 = 0;
@@ -74,10 +75,20 @@ sensor_on_ray_3 = 1;
 sensor_vector_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1));
 sensor_vector_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1));
 
+format long
 
-D_21 = rot_mat * sensor_vector_21  ;
-D_31 = rot_mat * sensor_vector_31  ;
- 
+D_21 = rot_mat * sensor_vector_21;
+D_31 = rot_mat * sensor_vector_31;
+
+% disp(rot_mat)
+% disp(D_31)
+% 
+% rot_mat_test = getRotMat(sensor_vector_31, D_31);
+% D_31_test = rot_mat_test * sensor_vector_31;
+% 
+% disp(rot_mat_test)
+% disp(D_31_test)
+
 % D = D*1.1; % introduce errors by scaling
 fprintf('Assumed Distance Between Sensors at BS2 Ray & BS1 Ray: %f\n', norm(D_21));
 fprintf('Sensor Vector: \n');
