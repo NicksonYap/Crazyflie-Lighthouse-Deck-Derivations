@@ -35,7 +35,8 @@ classdef Helper
             A = [a_x, a_y, a_z];
             B = [b_x, b_y, b_z];
             
-            R = B*pinv(A);
+%             R = B*pinv(A);
+            R = B*Helper.pInv(A);
             
         end
         
