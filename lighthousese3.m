@@ -91,15 +91,15 @@ rot_mat_31 = D_31/sensor_vector_31;
 
 diff = norm(rot_mat_31 - rot_mat_21);
 
-rot_mat_21 = getRotMat(sensor_vector_21, D_21);
-rot_mat_31 = getRotMat(sensor_vector_31, D_31);
+rot_mat_21 = Helper.vectorRot(sensor_vector_21, D_21);
+rot_mat_31 = Helper.vectorRot(sensor_vector_31, D_31);
 
 diff = norm(rot_mat_31 - rot_mat_21);
 
 % vrrotvec(sensor_vector_21, D_21)
 
-rel_rot_mat = getRotMat(sensor_vector_31, sensor_vector_21)
-rel_rotted_mat = getRotMat(D_31, D_21)
+rel_rot_mat = Helper.vectorRot(sensor_vector_31, sensor_vector_21)
+rel_rotted_mat = Helper.vectorRot(D_31, D_21)
 
 
 % ref for rotation/transformation matrix equivalent 3x3, not 4x4 = https://www.mathworks.com/matlabcentral/answers/254132-how-to-calculate-transformation-matrix-x-a-y#
