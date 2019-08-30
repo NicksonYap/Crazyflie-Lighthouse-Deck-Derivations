@@ -61,46 +61,66 @@ end
 
 % format long
 
-P_sf = [0; 0; 1];
-
-yaw = 15; % degrees
-pitch = 15;
-roll = 15;
-rot_mat = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
-
 sensor_on_ray_1 = 0;
 sensor_on_ray_2 = 2;
 sensor_on_ray_3 = 1;
 
-sensor_vector_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1));
-sensor_vector_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1));
+yaw = 45; % degrees
+pitch = 45;
+roll = 45;
+rot_mat = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
 
-format long
+tracker_center = [0; 0; 1]; % center of tracker
+% tracker_center = P_sf - rot_mat * S(:, sensor_on_ray_1 + 1);
+
+% P_sf = [0; 0; 1]; % center of sensor_on_ray_1
+P_sf = tracker_center + rot_mat * S(:, sensor_on_ray_1 + 1); % sensor_on_ray_1 as reference point
+
+sensor_vector_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
+sensor_vector_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
 
 D_21 = rot_mat * sensor_vector_21;
 D_31 = rot_mat * sensor_vector_31;
 
-% disp(rot_mat)
-% disp(D_31)
-% 
-% rot_mat_test = getRotMat(sensor_vector_31, D_31);
-% D_31_test = rot_mat_test * sensor_vector_31;
-% 
-% disp(rot_mat_test)
-% disp(D_31_test)
+%% Test Rotation Matrix
 
-% D = D*1.1; % introduce errors by scaling
+format long
+
+rot_mat_21 = D_21/sensor_vector_21;
+rot_mat_31 = D_31/sensor_vector_31;
+
+diff = norm(rot_mat_31 - rot_mat_21);
+
+rot_mat_21 = getRotMat(sensor_vector_21, D_21);
+rot_mat_31 = getRotMat(sensor_vector_31, D_31);
+
+diff = norm(rot_mat_31 - rot_mat_21);
+
+% vrrotvec(sensor_vector_21, D_21)
+
+rel_rot_mat = getRotMat(sensor_vector_31, sensor_vector_21)
+rel_rotted_mat = getRotMat(D_31, D_21)
+
+
+%%
+
+% D_21 = D_21*1.1; % introduce errors by scaling
+% D_31 = D_31*0.9; % introduce errors by scaling
+
+plot3(tracker_center(1), tracker_center(2), tracker_center(3), 'r.-'); % plot center of drone at rays
+text(tracker_center(1), tracker_center(2), tracker_center(3), 'c', 'Color', 'r')
+
 fprintf('Assumed Distance Between Sensors at BS2 Ray & BS1 Ray: %f\n', norm(D_21));
 fprintf('Sensor Vector: \n');
 disp(D_21);
 
-quiver3(P_sf(1), P_sf(2), P_sf(3), D_21(1), D_21(2), D_21(3), 'r'); % plot D_21
+quiver3(P_sf(1), P_sf(2), P_sf(3), D_21(1), D_21(2), D_21(3), 'r'); % plot D_21 on rays
 
 fprintf('Assumed Distance Between Sensors at BS3 Ray & BS1 Ray: %f\n', norm(D_31));
 fprintf('Sensor Vector: \n');
 disp(D_31);
 
-quiver3(P_sf(1), P_sf(2), P_sf(3), D_31(1), D_31(2), D_31(3), 'r'); % plot D_31
+quiver3(P_sf(1), P_sf(2), P_sf(3), D_31(1), D_31(2), D_31(3), 'r'); % plot D_31 on rays
     
 
 %% Rays Setup
