@@ -29,8 +29,8 @@ classdef Helper
                 error('Magnitude of cross products mismatch')
             end
             
-            a_z = cross(a_y, a_y); % might be the same if cross(a_x, a_x)
-            b_z = cross(b_y, b_y); % might be the same if cross(b_x, b_x)
+            a_z = cross(a_y, a_y); % cannot be cross(a_x, a_x)
+            b_z = cross(b_y, b_y); % cannot be cross(b_x, b_x)
             
             A = [a_x, a_y, a_z];
             B = [b_x, b_y, b_z];
