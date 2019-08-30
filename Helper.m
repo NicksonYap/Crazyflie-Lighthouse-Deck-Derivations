@@ -68,6 +68,52 @@ classdef Helper
         %     b_ = R * a
 
         end
+        
+        function testRot(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31)
+            
+            format long
+
+            rot_mat_21 = D_21/sensor_vector_21;
+            rot_mat_31 = D_31/sensor_vector_31;
+
+            diff = norm(rot_mat_31 - rot_mat_21);
+
+            rot_mat_21 = Helper.vectorRot(sensor_vector_21, D_21);
+            rot_mat_31 = Helper.vectorRot(sensor_vector_31, D_31);
+
+            diff = norm(rot_mat_31 - rot_mat_21);
+
+            % vrrotvec(sensor_vector_21, D_21)
+
+            rel_rot_mat = Helper.vectorRot(sensor_vector_31, sensor_vector_21)
+            rel_rotted_mat = Helper.vectorRot(D_31, D_21)
+
+
+            % ref for rotation/transformation matrix equivalent 3x3, not 4x4 = https://www.mathworks.com/matlabcentral/answers/254132-how-to-calculate-transformation-matrix-x-a-y#
+            % rel_trans_mat = sensor_vector_31*pinv(sensor_vector_21)
+            % rel_transed_mat = D_31*pinv(D_21)
+
+            % rot_mat\(D_31*pinv(D_21)) == (sensor_vector_31*pinv(sensor_vector_21)) / rot_mat
+            % (rot_mat\(D_31*pinv(D_21)))*rot_mat == ((sensor_vector_31*pinv(sensor_vector_21)) / rot_mat) * rot_mat
+            % (rot_mat\(D_31*pinv(D_21)))*rot_mat == sensor_vector_31*pinv(sensor_vector_21)
+            % (rot_mat\(D_31*pinv(D_21)))*rot_mat == rel_trans_mat
+            % (rot_mat\rel_transed_mat)*rot_mat == rel_trans_mat
+            % rot_mat\rel_transed_mat == rel_trans_mat / rot_mat
+            % rot_mat\rel_transed_mat == rel_trans_mat / rot_mat
+            % rot_mat.' * rel_transed_mat == rel_trans_mat / rot_mat
+            % transpose(rot_mat) * rel_transed_mat == rel_trans_mat * inv(rot_mat)
+            % transpose(rot_mat) * rel_transed_mat * rot_mat == rel_trans_mat
+
+
+
+
+            xx = rot_mat\(D_31*pinv(D_21)) 
+            yy = (sensor_vector_31*Helper.pInv(sensor_vector_21)) / rot_mat
+
+            diff = norm(xx - yy)
+            
+
+        end
     end
 end
 
