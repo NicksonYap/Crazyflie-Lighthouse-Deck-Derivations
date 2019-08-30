@@ -114,6 +114,24 @@ classdef Helper
             
 
         end
+        
+        function testRot2(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31)
+            
+            format long
+            
+            rot_mat
+            rot_mat_rev = Helper.planeRot(sensor_vector_31, sensor_vector_21, D_31, D_21)
+            % rot_mat & rot_mat_rev may differ, however the result will be the same, and rot_mat_rev is cleaner
+
+            D_21
+            D_21_ = rot_mat_rev * sensor_vector_21
+            
+            D_31
+            D_31_ = rot_mat_rev * sensor_vector_31
+
+            
+
+        end
     end
 end
 

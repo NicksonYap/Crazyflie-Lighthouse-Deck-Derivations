@@ -84,8 +84,8 @@ D_31 = rot_mat * sensor_vector_31;
 
 %% Test Rotation Matrix
 
-
-
+% Helper.testRot(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31);
+Helper.testRot2(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31);
 
 %%
 
