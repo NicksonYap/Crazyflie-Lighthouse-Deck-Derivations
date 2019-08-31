@@ -215,7 +215,7 @@ classdef Helper
             quiver3(Sf_1(1), Sf_1(2), Sf_1(3), D(1), D(2), D(3), 'g');
 
             Pf = Sf_1 + D / 2; % midpoint of Best Fit Segment
-            plot3(Pf(1), Pf(2), Pf(3), 'r.-'); % plot mid point
+%             plot3(Pf(1), Pf(2), Pf(3), 'r.-'); % plot mid point
 
             
             Pf_1 = Pf - D / 2;
