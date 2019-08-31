@@ -29,6 +29,10 @@ detection(3).B = [-1.759562; -4.505452; 2.635298];
 detection(3).sens = 1;
 detection(3).R_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 
+detection(4).B = [1.729562; 5.251678; 2.641019];
+detection(4).sens = 3;
+detection(4).R_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+
 SINGLE_BASESTATION = false;
 % SINGLE_BASESTATION = true;
 
