@@ -9,7 +9,6 @@ S = [S, [- sd_x / 2; - sd_y / 2; 0]]; % Sensor 1
 S = [S, [sd_x / 2; sd_y / 2; 0]]; % Sensor 2
 S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 
-
 %% Define Tracker Position and Orientation
 
 yaw = 45; % degrees
@@ -25,22 +24,43 @@ tracker_center = [0; 0; 1]; % center of tracker
 % detection number 1 will serve as reference point in calculations 
 clear detection
 
+INTRODUCE_ERRORS = false;
+% INTRODUCE_ERRORS = true;
+
+% detection(1).color = 'k';
 detection(1).B = [-1.789562; 5.251678; 2.641019];
 detection(1).sens = 0;
 detection(1).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+if INTRODUCE_ERRORS
+end
 
+detection(2).color = 'r';
 detection(2).B = [1.734847; -4.475452; 2.665298];
 detection(2).sens = 2;
 detection(2).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+if INTRODUCE_ERRORS
+    detection(2).r_error = Helper.deg2dcm(01,0,0); % zeros if exactly on sensor
+end
 
-% detection(3).B = [-1.759562; -2.005452; 2.635298];
+detection(3).color = 'g';
+detection(3).B = [-1.759562; -2.005452; 2.635298];
 detection(3).B = [-1.759562; -4.505452; 2.635298];
 detection(3).sens = 1;
 detection(3).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+if INTRODUCE_ERRORS
+    detection(3).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+end
 
+detection(4).color = 'b';
 detection(4).B = [1.729562; 5.251678; 2.641019];
 detection(4).sens = 3;
-detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on 
+if INTRODUCE_ERRORS
+    detection(4).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+end
+
+
+
 
 SINGLE_BASESTATION = false;
 % SINGLE_BASESTATION = true;
@@ -67,11 +87,11 @@ hold on
 
 %%  Plot Sensors
 
-for i = 1 : size(S(), 2)
-    Si = S(:, i);
-    plot3(Si(1), Si(2), Si(3), 'k.-'); % plot sensors
-    text(Si(1), Si(2), Si(3), num2str(i - 1), 'Color', 'k')
-end
+% for i = 1 : size(S(), 2)
+%     Si = S(:, i);
+%     plot3(Si(1), Si(2), Si(3), 'k.-'); % plot sensors
+%     text(Si(1), Si(2), Si(3), num2str(i - 1), 'Color', 'k')
+% end
 
 %% Plot Basestations
 
@@ -89,7 +109,7 @@ for i = 2:length(detection)
 end
 
 
-%% Plot & Configure Tracker
+%% Plot & Configure Detections
 
 % simulate D vector as if Rays fall directly on both of Sensors (ignores sensor dimensions)
 
@@ -114,7 +134,7 @@ for i = 2:length(detection)
    
     fprintf('Distance Between Sensors at detection %d & 1: %f\n', i, norm(D_1));
     
-    quiver3(P_1(1), P_1(2), P_1(3), D_1(1), D_1(2), D_1(3), 'r'); % plot D_1 on rays
+    quiver3(P_1(1), P_1(2), P_1(3), D_1(1), D_1(2), D_1(3), 'k'); % plot D_1 on rays
 end
 
 
@@ -142,7 +162,7 @@ for i = 1:length(detection)
     plot_ray_length = 10;
     Ray = plot_ray_length * r;
 
-    quiver3(B(1), B(2),B(3), Ray(1), Ray(2), Ray(3), 'b'); % plot Rays
+    quiver3(B(1), B(2),B(3), Ray(1), Ray(2), Ray(3), 'k'); % plot Rays
 end
 
 
@@ -158,8 +178,8 @@ for i = 1:size(detection_pairs(), 1)
     
     [Sc_1, Sc_2, dist, dir, vec] = shortestSegment(detection(first).B, detection(first).r, detection(second).B, detection(second).r);
 %     fprintf('Shortest Distance Between Rays from BS 2 & 3: %f\n', dist);
-    plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
-    quiver3(Sc_1(1), Sc_1(2), Sc_1(3), vec(1), vec(2), vec(3), 'b'); % plot Shortest Segment vector
+    plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'y.-'); % plot Shortest Segment points
+    quiver3(Sc_1(1), Sc_1(2), Sc_1(3), vec(1), vec(2), vec(3), 'y'); % plot Shortest Segment vector
 
     % since Rays from Base Stations should surely touch the Sensor at the same
     % point, the distance here should be zero.
@@ -172,11 +192,16 @@ end
 
 prev_Sf_1 = false;
 
+Sf_1_suggestions = [];
+d_1_suggestions = [];
+
 for i = 2:length(detection)
    
     [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, detection(i).D_1);
-    Helper.plotSensors(S, R, Sf_2, Sf_1, detection(i).sens, detection(1).sens);
-
+    Helper.plotSensors(detection(i).color, S, R, Sf_2, Sf_1, detection(i).sens, detection(1).sens, detection(i).D_1);
+    
+    Sf_1_suggestions = [Sf_1_suggestions , Sf_1];
+    d_1_suggestions = [d_1_suggestions , d_1];
     prev_Sf_1 = Sf_1;
     
     fprintf('Suggested Distance on Ray 1 by detection %d: %f\n', i, d_1);
@@ -187,9 +212,21 @@ for i = 2:length(detection)
     end
 end
 
+Sf_1_mean = mean(Sf_1_suggestions, 2)
+
+d_1_mean = mean(d_1_suggestions, 2)
+
 
 %% Plot End
 
 % legend({'detection(1).B', 'detection(2).B', 'Rp_1', 'Rp_2', 'Sa_1', 'Sa_2'});
+
+% view(0,0) % X & Z
+% view(0,90) % X & Y
+% zoom(50)
+% view(90,0) % Y & Z
+
+% rotate3d on
+
 
 hold off

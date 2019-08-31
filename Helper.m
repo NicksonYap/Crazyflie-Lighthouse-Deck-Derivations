@@ -204,27 +204,29 @@ classdef Helper
 
         end
         
-        function plotSensors(S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1)
+        function plotSensors(color, S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1, D_1)
+%             color = 'm';
             
             D = Sf_2 - Sf_1;
 
 %             d_f = norm(D);
 %             fprintf('Best Fit Segment Distance: %f\n', d_f);
             
-            plot3(Sf_1(1), Sf_1(2), Sf_1(3), 'g.-', Sf_2(1), Sf_2(2), Sf_2(3), 'g.-');
-            quiver3(Sf_1(1), Sf_1(2), Sf_1(3), D(1), D(2), D(3), 'g');
+            plot3(Sf_1(1), Sf_1(2), Sf_1(3), '.', 'Color', color);
+            plot3(Sf_2(1), Sf_2(2), Sf_2(3), '.', 'Color', color);
+            quiver3(Sf_1(1), Sf_1(2), Sf_1(3), D(1), D(2), D(3), color);
 
             Pf = Sf_1 + D / 2; % midpoint of Best Fit Segment
-%             plot3(Pf(1), Pf(2), Pf(3), 'r.-'); % plot mid point
+            plot3(Pf(1), Pf(2), Pf(3), '.', 'Color', color); % plot mid point
 
             
-            Pf_1 = Pf - D / 2;
-            Pf_2 = Pf + D / 2;
-            plot3(Pf_1(1), Pf_1(2), Pf_1(3), 'g.-'); % plot sensor_on_ray_1
-            plot3(Pf_2(1), Pf_2(2), Pf_2(3), 'm.-'); % plot sensor_on_ray_2
+            Pf_1 = Pf - D_1 / 2;
+            Pf_2 = Pf + D_1 / 2;
+            plot3(Pf_1(1), Pf_1(2), Pf_1(3), '.', 'Color', color); % plot sensor_on_ray_1
+            plot3(Pf_2(1), Pf_2(2), Pf_2(3), '.', 'Color', color); % plot sensor_on_ray_2
 
-            text(Pf_1(1), Pf_1(2), Pf_1(3), num2str(sensor_on_ray_1), 'Color', 'g')
-            text(Pf_2(1), Pf_2(2), Pf_2(3), num2str(sensor_on_ray_2), 'Color', 'm')
+            text(Pf_1(1), Pf_1(2), Pf_1(3), num2str(sensor_on_ray_1), 'Color', color)
+            text(Pf_2(1), Pf_2(2), Pf_2(3), num2str(sensor_on_ray_2), 'Color', color)
 
             norm(Pf_2 - Pf_1);
 
@@ -236,8 +238,7 @@ classdef Helper
                 Sx = S_ex(:, i);
                 Dx = R * (Sx - S(:, sensor_on_ray_1 + 1));
                 Px = Pf_1 + Dx;
-
-                plot3(Px(1), Px(2), Px(3), 'k.-'); % plot sensor_on_ray_1
+                plot3(Px(1), Px(2), Px(3), '.', 'Color', color); % plot sensor_on_ray_1
             end
 
 
