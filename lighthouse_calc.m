@@ -150,12 +150,16 @@ disp(D);
 
 %%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 
-w_0 = B_2 - B_1;
-D_w = D - w_0;
-m = (v \ u);
-c = v \ (D_w);
+w = B_2 - B_1;
+Dw = D - w;
+m = (v\u);
+c = v\(Dw);
 
-s_f = - (m*v - u) \ (c*v - D_w);
+% 0 = s_f*( (v\u)*v - u ) + ( v\(Dw)*v - Dw );
+% s_f = - ((v\u)*v - u) \ ( v\(Dw)*v - Dw );
+s_f = - (m*v - u) \ (c*v - Dw);
+
+
 t_f = m*s_f + c; % linear equation
 
 Sf_1 = B_1 + s_f * u;
