@@ -123,22 +123,18 @@ else
  
     %    r = (Rp_2 - Rp_1) / norm(Rp_2 - Rp_1) % rotation unit vector
  
-    Rp = [1; 0; 0]; % default direction, pointing in X
- 
     yaw = 0; % degrees
     pitch = 0;
     roll = 0;
-    rot_mat = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
+    R = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
  
     sensor_on_ray_1 = 0;
     sensor_on_ray_2 = 2;
 %     sensor_on_ray_2 = sensor_on_ray_1; % if only 1 sensor
  
-    distance_between_sensors = norm(S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1));
- 
-    %    D = distance_between_sensors*r;
- 
-    D = distance_between_sensors * rot_mat * Rp ;
+    s = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
+
+    D = R * s;
  
 end
 
@@ -195,7 +191,7 @@ if ~ SIMULATE_SENSORS_ON_RAY
  
     for i = 1 : size(S_ex(), 2)
         Sx = S_ex(:, i);
-        Dx = rot_mat * (Sx - S(:, sensor_on_ray_1 + 1));
+        Dx = R * (Sx - S(:, sensor_on_ray_1 + 1));
         Px = Pf_1 + Dx;
      
         plot3(Px(1), Px(2), Px(3), 'k.-'); % plot sensor_on_ray_1

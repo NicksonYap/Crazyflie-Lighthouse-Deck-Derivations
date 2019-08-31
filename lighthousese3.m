@@ -68,24 +68,24 @@ sensor_on_ray_3 = 1;
 yaw = 45; % degrees
 pitch = 45;
 roll = 45;
-rot_mat = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
+R = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll));
 
 tracker_center = [0; 0; 1]; % center of tracker
-% tracker_center = P_sf - rot_mat * S(:, sensor_on_ray_1 + 1);
+% tracker_center = P_sf - R * S(:, sensor_on_ray_1 + 1);
 
 % P_sf = [0; 0; 1]; % center of sensor_on_ray_1
-P_sf = tracker_center + rot_mat * S(:, sensor_on_ray_1 + 1); % sensor_on_ray_1 as reference point
+P_sf = tracker_center + R * S(:, sensor_on_ray_1 + 1); % sensor_on_ray_1 as reference point
 
 sensor_vector_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
 sensor_vector_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
 
-D_21 = rot_mat * sensor_vector_21;
-D_31 = rot_mat * sensor_vector_31;
+D_21 = R * sensor_vector_21;
+D_31 = R * sensor_vector_31;
 
 %% Test Rotation Matrix
 
-% Helper.testRot(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31);
-Helper.testRot2(sensor_vector_21, sensor_vector_31, rot_mat, D_21, D_31);
+% Helper.testRot(sensor_vector_21, sensor_vector_31, R, D_21, D_31);
+Helper.testRot2(sensor_vector_21, sensor_vector_31, R, D_21, D_31);
 
 %%
 
