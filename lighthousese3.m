@@ -191,11 +191,13 @@ quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Sh
 
 %%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 
-[Sf_2, Sf_1, segment_error_21] = Helper.bestFitBetweenRays(B_2, B_1, v, u, D_21);
-Helper.plotSensors(S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1);
+[Sf_2, Sf_1_2, segment_error_21] = Helper.bestFitBetweenRays(B_2, B_1, v, u, D_21);
+Helper.plotSensors(S, R, Sf_2, Sf_1_2, sensor_on_ray_2, sensor_on_ray_1);
 
-[Sf_3, Sf_1, segment_error_31] = Helper.bestFitBetweenRays(B_3, B_1, g, u, D_31);
-Helper.plotSensors(S, R, Sf_3, Sf_1, sensor_on_ray_3, sensor_on_ray_1);
+[Sf_3, Sf_1_3, segment_error_31] = Helper.bestFitBetweenRays(B_3, B_1, g, u, D_31);
+Helper.plotSensors(S, R, Sf_3, Sf_1_3, sensor_on_ray_3, sensor_on_ray_1);
+
+diff = norm(Sf_1_2 - Sf_1_3)
 
 %% Attempt to derive R
 
@@ -204,18 +206,16 @@ w_21 = B_2 - B_1;
 Dw_21 = D_21 - w_21;
 % s_f = - ((v\u)*v - u) \ ( v\(Dw_21)*v - Dw_21 );
 % s_f = - ((v\u)*v - u) \ ( v\( D_21 - w_21 )*v - ( D_21 - w_21 ) );
-s_f = - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) );
-
-s_f_21 = s_f
+% s_f = - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) );
+% s_f_21 = s_f
 
 % D_31 = R*s_31;
 w_31 = B_3 - B_1;
 Dw_31 = D_31 - w_31;
 % s_f = - ((g\u)*g - u) \ ( g\(Dw_31)*g - Dw_31 );
 % s_f = - ((g\u)*g - u) \ ( g\( D_31 - w_31 )*g - ( D_31 - w_31 ) );
-s_f = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) );
-
-s_f_31 = s_f
+% s_f = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) );
+% s_f_31 = s_f
 
 % s_f = s_f;
 % - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
@@ -226,42 +226,47 @@ s_f_31 = s_f
             
 %% Plot Calc
 
-step_size = 0.05;
-offset = 0;
-offset = -step_size/2;
-increments = 10;
-for i=1:increments
-%     disp(i)
-    increment = (i-increments/2)*step_size + offset;
+PLOT_ERROR_CURVE = false;
+% PLOT_ERROR_CURVE = true;
 
-    s_f = norm(Rp_1 - B_1) + increment;
-    
-    [t_f, Rf21_1, Rf21_2, v_error_21, error_21] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
-    d21 = Rf21_2 - Rf21_1;
-    
-    [r_f, Rf31_1, Rf31_2, v_error_31, error_31] = getResultAndErrors(B_1, u, B_3, g, s_f, D_31);
-    d31 = Rf31_2 - Rf31_1;
-    
-    
-    fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error_21, v_error_21(1), v_error_21(2), v_error_21(3), r_f, error_31, v_error_31(1), v_error_31(2), v_error_31(3));
-    
-    
-    plot3(Rf21_1(1), Rf21_1(2), Rf21_1(3), 'g.-');
-    plot3(Rf21_2(1), Rf21_2(2), Rf21_2(3), 'g.-');
-    quiver3(Rf21_1(1), Rf21_1(2), Rf21_1(3), d21(1), d21(2), d21(3), 'g');
+if PLOT_ERROR_CURVE
+    step_size = 0.05;
+    offset = 0;
+    offset = -step_size/2;
+    increments = 10;
+    for i=1:increments
+    %     disp(i)
+        increment = (i-increments/2)*step_size + offset;
 
-    plot3(s_f, t_f, error_21, 'g.-');
-    
-    
-    
-    plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
-    plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
-    quiver3(Rf31_1(1), Rf31_1(2), Rf31_1(3), d31(1), d31(2), d31(3), 'c');
+        s_f = norm(Rp_1 - B_1) + increment;
 
-    plot3(s_f, r_f, error_31, 'c.-');
-    
+        [t_f, Rf21_1, Rf21_2, v_error_21, error_21] = getResultAndErrors(B_1, u, B_2, v, s_f, D_21);
+        d21 = Rf21_2 - Rf21_1;
+
+        [r_f, Rf31_1, Rf31_2, v_error_31, error_31] = getResultAndErrors(B_1, u, B_3, g, s_f, D_31);
+        d31 = Rf31_2 - Rf31_1;
+
+
+        fprintf('%f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f \n', increment, s_f, t_f, error_21, v_error_21(1), v_error_21(2), v_error_21(3), r_f, error_31, v_error_31(1), v_error_31(2), v_error_31(3));
+
+
+        plot3(Rf21_1(1), Rf21_1(2), Rf21_1(3), 'g.-');
+        plot3(Rf21_2(1), Rf21_2(2), Rf21_2(3), 'g.-');
+        quiver3(Rf21_1(1), Rf21_1(2), Rf21_1(3), d21(1), d21(2), d21(3), 'g');
+
+        plot3(s_f, t_f, error_21, 'g.-');
+
+
+
+        plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
+        plot3(Rf31_1(1), Rf31_1(2), Rf31_1(3), 'c.-');
+        quiver3(Rf31_1(1), Rf31_1(2), Rf31_1(3), d31(1), d31(2), d31(3), 'c');
+
+        plot3(s_f, r_f, error_31, 'c.-');
+
+    end
+
 end
-
 
 
 %% Plot End

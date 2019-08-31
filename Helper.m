@@ -165,8 +165,10 @@ classdef Helper
 %             D = R*s;
             w = B_2 - B_1;
             Dw = D - w;
-            m = (v\u);
-            c = v\(Dw);
+%             m = v\u;
+            m = transpose(u)*v;
+%             c = v\(Dw);
+            c = transpose(Dw)*v;
 
             % 0 = s_f*( (v\u)*v - u ) + ( v\(Dw)*v - Dw );
             % s_f = - ((v\u)*v - u) \ ( v\(Dw)*v - Dw );
