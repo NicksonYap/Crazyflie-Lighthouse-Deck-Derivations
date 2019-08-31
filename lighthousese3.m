@@ -85,7 +85,7 @@ D_31 = R*s_31;
 %% Test Rotation Matrix
 
 % Helper.testRot(s_21, s_31, R, D_21, D_31);
-Helper.testRot2(s_21, s_31, R, D_21, D_31);
+% Helper.testRot2(s_21, s_31, R, D_21, D_31);
 
 %%
 
@@ -110,8 +110,8 @@ quiver3(P_sf(1), P_sf(2), P_sf(3), D_31(1), D_31(2), D_31(3), 'r'); % plot D_31 
 
 %% Rays Setup
 
-RAYS_ON_SENSOR = true
-% RAYS_ON_SENSOR = false
+RAYS_ON_SENSOR = true;
+% RAYS_ON_SENSOR = false;
 
 if RAYS_ON_SENSOR
     
@@ -191,18 +191,45 @@ quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Sh
 
 %%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 
-[Sf_2, Sf_1, segment_error_21] = Helper.bestFitBetweenRays(B_2, B_1, v, u, D_21)
+[Sf_2, Sf_1, segment_error_21] = Helper.bestFitBetweenRays(B_2, B_1, v, u, D_21);
 Helper.plotSensors(S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1);
 
-[Sf_3, Sf_1, segment_error_31] = Helper.bestFitBetweenRays(B_3, B_1, g, u, D_31)
+[Sf_3, Sf_1, segment_error_31] = Helper.bestFitBetweenRays(B_3, B_1, g, u, D_31);
 Helper.plotSensors(S, R, Sf_3, Sf_1, sensor_on_ray_3, sensor_on_ray_1);
 
+%% Attempt to derive R
+
+% D_21 = R*s_21;
+w_21 = B_2 - B_1;
+Dw_21 = D_21 - w_21;
+% s_f = - ((v\u)*v - u) \ ( v\(Dw_21)*v - Dw_21 );
+% s_f = - ((v\u)*v - u) \ ( v\( D_21 - w_21 )*v - ( D_21 - w_21 ) );
+s_f = - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) );
+
+s_f_21 = s_f
+
+% D_31 = R*s_31;
+w_31 = B_3 - B_1;
+Dw_31 = D_31 - w_31;
+% s_f = - ((g\u)*g - u) \ ( g\(Dw_31)*g - Dw_31 );
+% s_f = - ((g\u)*g - u) \ ( g\( D_31 - w_31 )*g - ( D_31 - w_31 ) );
+s_f = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) );
+
+s_f_31 = s_f
+
+% s_f = s_f;
+% - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
+% ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
+
+% ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )  \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ((v\u)*v - u)
+% don't know how to extract value R, likely require some kind of solve, because there will be a value of R that will satisfy = ((g\u)*g - u) \ ((v\u)*v - u)
+            
 %% Plot Calc
 
 step_size = 0.05;
 offset = 0;
 offset = -step_size/2;
-increments = 80;
+increments = 10;
 for i=1:increments
 %     disp(i)
     increment = (i-increments/2)*step_size + offset;
