@@ -22,10 +22,27 @@ B_1 = [-1.789562; 5.251678; 2.641019];
 B_2 = [1.734847; -4.475452; 2.665298];
 B_3 = [-1.759562; -4.505452; 2.635298];
 % B_3 = [-1.759562; -2.005452; 2.635298];
+% detection number 1 will serve as reference point in calculations 
+
+detection(1).B = [-1.789562; 5.251678; 2.641019];
+detection(1).sens = 0;
+detection(1).R_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+
+detection(2).B = [1.734847; -4.475452; 2.665298];
+detection(2).sens = 2;
+detection(2).R_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+
+% detection(3).B = [-1.759562; -2.005452; 2.635298];
+detection(3).B = [-1.759562; -4.505452; 2.635298];
+detection(3).sens = 1;
+detection(3).R_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
+
+SINGLE_BASESTATION = false;
+% SINGLE_BASESTATION = true;
 
 if SINGLE_BASESTATION
-    B_2 = B_1; % single base station
-    B_3 = B_1; % single base station
+    detection(2).B = detection(1).B; % single base station
+    detection(3).B = detection(1).B; % single base station
 end
 
 plot3(B_1(1), B_1(2), B_1(3), 'b^-'); % plot Base Station

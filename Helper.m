@@ -243,6 +243,10 @@ classdef Helper
 
         end
         
+        function R = deg2dcm(yaw, pitch, roll)
+           R = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll)) ;
+        end
+        
     end
 end
 
