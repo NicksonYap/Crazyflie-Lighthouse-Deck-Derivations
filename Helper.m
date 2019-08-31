@@ -160,7 +160,7 @@ classdef Helper
 
         end
         
-        function [Sf_2, Sf_1, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
+        function [Sf_2, Sf_1, t_f, s_f, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
             
 %             D = R*s;
             w = B_2 - B_1;

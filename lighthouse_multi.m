@@ -23,6 +23,7 @@ tracker_center = [0; 0; 1]; % center of tracker
 
 
 % detection number 1 will serve as reference point in calculations 
+clear detection
 
 detection(1).B = [-1.789562; 5.251678; 2.641019];
 detection(1).sens = 0;
@@ -66,7 +67,7 @@ hold on
 
 %%  Plot Sensors
 
-for i = 1 : length(S)
+for i = 1 : size(S(), 2)
     Si = S(:, i);
     plot3(Si(1), Si(2), Si(3), 'k.-'); % plot sensors
     text(Si(1), Si(2), Si(3), num2str(i - 1), 'Color', 'k')
@@ -134,6 +135,7 @@ for i = 1:length(detection)
     B = detection(i).B;
     r = (Rp - B) / norm(Rp - B);
 
+    r = detection(i).r_error * r;
     detection(i).r = r;
     
     % Simulated End of Ray
@@ -148,14 +150,14 @@ end
 
 detection_pairs = nchoosek( 1:length(detection), 2);
 
-for i = 1:length(detection_pairs)
+for i = 1:size(detection_pairs(), 1)
     detection_pair = detection_pairs(i,:);
     
     first = detection_pair(1);
     second = detection_pair(2);
     
     [Sc_1, Sc_2, dist, dir, vec] = shortestSegment(detection(first).B, detection(first).r, detection(second).B, detection(second).r);
-    fprintf('Shortest Distance Between Rays from BS 2 & 3: %f\n', dist);
+%     fprintf('Shortest Distance Between Rays from BS 2 & 3: %f\n', dist);
     plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'b.-'); % plot Shortest Segment points
     quiver3(Sc_1(1), Sc_1(2), Sc_1(3), vec(1), vec(2), vec(3), 'b'); % plot Shortest Segment vector
 
@@ -172,13 +174,16 @@ prev_Sf_1 = false;
 
 for i = 2:length(detection)
    
-    [Sf_2, Sf_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, detection(i).D_1);
+    [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, detection(i).D_1);
     Helper.plotSensors(S, R, Sf_2, Sf_1, detection(i).sens, detection(1).sens);
 
     prev_Sf_1 = Sf_1;
+    
+    fprintf('Suggested Distance on Ray 1 by detection %d: %f\n', i, d_1);
+    fprintf('Resulting Distance on Ray %d by detection %d: %f\n', i, i, d_2);
 
     if prev_Sf_1
-        diff = norm(Sf_1 - prev_Sf_1)
+        diff = norm(Sf_1 - prev_Sf_1);
     end
 end
 
