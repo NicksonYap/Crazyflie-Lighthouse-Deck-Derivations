@@ -35,11 +35,32 @@ classdef Helper
             A = [a_x, a_y, a_z];
             B = [b_x, b_y, b_z];
             
-%             R = B*pinv(A);
-            R = B*Helper.pInv(A);
+%             Ainv = inv(A)
+%             Apinv = pinv(A)
+%             Ahpinv = Helper.pInv(A)
+           
+%             R = B*inv(A);
+            R = B*pinv(A);
+%             R = B*Helper.pInv(A); %why does this not work??
+            
+%             B_ = R*A; %test
+%             B_ == B;
             
         end
         
+        function u = unit(a)
+            u = a/norm(a);
+            return
+        end
+        
+        function R = vectorRot2(a, b)
+            % ref: https://math.stackexchange.com/a/2161631
+            % assuming a & b are unit vectors
+            
+            R = Helper.planeRot(Helper.unit(a), zeros(3, 1), Helper.unit(b), zeros(3, 1) ); %equivalent, only if norm(a) == norm(b)
+            return
+        end
+
         function R = vectorRot(a, b)
             % ref: https://math.stackexchange.com/a/2161631
             % assuming a & b are unit vectors
@@ -130,6 +151,11 @@ classdef Helper
             D_31
             D_31_ = rot_mat_rev * sensor_vector_31
 
+            rel_rot_mat_a = Helper.vectorRot(sensor_vector_31, sensor_vector_21)
+            rel_rot_mat_a = Helper.vectorRot2(sensor_vector_31, sensor_vector_21)
+            
+            rel_rot_mat_b = Helper.vectorRot(D_31,D_21)
+            rel_rot_mat_b = Helper.vectorRot2(D_31,D_21)
             
 
         end
