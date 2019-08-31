@@ -76,16 +76,16 @@ tracker_center = [0; 0; 1]; % center of tracker
 % P_sf = [0; 0; 1]; % center of sensor_on_ray_1
 P_sf = tracker_center + R * S(:, sensor_on_ray_1 + 1); % sensor_on_ray_1 as reference point
 
-sensor_vector_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
-sensor_vector_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
+s_21 = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
+s_31 = (S(:, sensor_on_ray_3 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
 
-D_21 = R * sensor_vector_21;
-D_31 = R * sensor_vector_31;
+D_21 = R*s_21;
+D_31 = R*s_31;
 
 %% Test Rotation Matrix
 
-% Helper.testRot(sensor_vector_21, sensor_vector_31, R, D_21, D_31);
-Helper.testRot2(sensor_vector_21, sensor_vector_31, R, D_21, D_31);
+% Helper.testRot(s_21, s_31, R, D_21, D_31);
+Helper.testRot2(s_21, s_31, R, D_21, D_31);
 
 %%
 

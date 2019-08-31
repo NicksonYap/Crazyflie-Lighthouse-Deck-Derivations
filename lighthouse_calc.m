@@ -134,7 +134,7 @@ else
  
     s = (S(:, sensor_on_ray_2 + 1) - S(:, sensor_on_ray_1 + 1)); % relative to sensor_on_ray_1
 
-    D = R * s;
+    D = R*s;
  
 end
 
