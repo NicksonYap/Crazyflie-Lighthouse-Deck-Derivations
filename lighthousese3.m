@@ -191,6 +191,11 @@ quiver3(Sc_1(1), Sc_1(2), Sc_1(3), d_c_k(1), d_c_k(2), d_c_k(3), 'b'); % plot Sh
 
 %%  2 Base Stations on 2 different Sensors (Best Fit of Segment between Rays)
 
+[Sf_2, Sf_1, segment_error_21] = Helper.bestFitBetweenRays(B_2, B_1, v, u, D_21)
+Helper.plotSensors(S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1);
+
+[Sf_3, Sf_1, segment_error_31] = Helper.bestFitBetweenRays(B_3, B_1, g, u, D_31)
+Helper.plotSensors(S, R, Sf_3, Sf_1, sensor_on_ray_3, sensor_on_ray_1);
 
 %% Plot Calc
 

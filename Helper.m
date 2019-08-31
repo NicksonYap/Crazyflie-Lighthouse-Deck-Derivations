@@ -159,6 +159,88 @@ classdef Helper
             
 
         end
+        
+        function [Sf_2, Sf_1, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
+            
+%             D = R*s;
+            w = B_2 - B_1;
+            Dw = D - w;
+            m = (v\u);
+            c = v\(Dw);
+
+            % 0 = s_f*( (v\u)*v - u ) + ( v\(Dw)*v - Dw );
+            % s_f = - ((v\u)*v - u) \ ( v\(Dw)*v - Dw );
+            s_f = - (m*v - u) \ (c*v - Dw);
+
+            % D_21 = R*s_21;
+            % w_21 = B_2 - B_1;
+            % Dw_21 = D_21 - w_21;
+            % s_f = - ((v\u)*v - u) \ ( v\(Dw_21)*v - Dw_21 );
+            % s_f = - ((v\u)*v - u) \ ( v\( D_21 - w_21 )*v - ( D_21 - w_21 ) );
+            % s_f = - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) );
+
+            % D_31 = R*s_31;
+            % w_31 = B_3 - B_1;
+            % Dw_31 = D_31 - w_31;
+            % s_f = - ((g\u)*g - u) \ ( g\(Dw_31)*g - Dw_31 );
+            % s_f = - ((g\u)*g - u) \ ( g\( D_31 - w_31 )*g - ( D_31 - w_31 ) );
+            % s_f = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) );
+
+            % s_f = s_f;
+            % - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
+            % ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
+
+            t_f = m*s_f + c; % linear equation
+
+            Sf_1 = B_1 + s_f * u;
+            Sf_2 = B_2 + t_f * v;
+            
+            segment_error = norm( (Sf_2 - Sf_1) - D);
+
+            % fprintf('Magnitude of Segment Error (in Meters): %f\n', segment_error);
+%             fprintf('Magnitude of Segment Error (in mm): %f\n', segment_error * 1000);
+
+        end
+        
+        function plotSensors(S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1)
+            
+            D = Sf_2 - Sf_1;
+
+%             d_f = norm(D);
+%             fprintf('Best Fit Segment Distance: %f\n', d_f);
+            
+            plot3(Sf_1(1), Sf_1(2), Sf_1(3), 'g.-', Sf_2(1), Sf_2(2), Sf_2(3), 'g.-');
+            quiver3(Sf_1(1), Sf_1(2), Sf_1(3), D(1), D(2), D(3), 'g');
+
+            Pf = Sf_1 + D / 2; % midpoint of Best Fit Segment
+            plot3(Pf(1), Pf(2), Pf(3), 'r.-'); % plot mid point
+
+            
+            Pf_1 = Pf - D / 2;
+            Pf_2 = Pf + D / 2;
+            plot3(Pf_1(1), Pf_1(2), Pf_1(3), 'g.-'); % plot sensor_on_ray_1
+            plot3(Pf_2(1), Pf_2(2), Pf_2(3), 'm.-'); % plot sensor_on_ray_2
+
+            text(Pf_1(1), Pf_1(2), Pf_1(3), num2str(sensor_on_ray_1), 'Color', 'g')
+            text(Pf_2(1), Pf_2(2), Pf_2(3), num2str(sensor_on_ray_2), 'Color', 'm')
+
+            norm(Pf_2 - Pf_1);
+
+            S_ex = S; % excluded sensors
+            S_ex(:, sensor_on_ray_1 + 1) = []; % exclude sensor_on_ray_1
+            S_ex(:, sensor_on_ray_2 + 1 - 1) = []; % exclude sensor_on_ray_2
+
+            for i = 1 : size(S_ex(), 2)
+                Sx = S_ex(:, i);
+                Dx = R * (Sx - S(:, sensor_on_ray_1 + 1));
+                Px = Pf_1 + Dx;
+
+                plot3(Px(1), Px(2), Px(3), 'k.-'); % plot sensor_on_ray_1
+            end
+
+
+        end
+        
     end
 end
 
