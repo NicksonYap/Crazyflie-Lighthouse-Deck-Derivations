@@ -207,16 +207,16 @@ classdef Helper
         function plotSensors(color, S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1, D_1)
 %             color = 'm';
             
-            D = Sf_2 - Sf_1;
+            segment_vector = Sf_2 - Sf_1;
 
-%             d_f = norm(D);
+%             d_f = norm(segment_vector);
 %             fprintf('Best Fit Segment Distance: %f\n', d_f);
             
             plot3(Sf_1(1), Sf_1(2), Sf_1(3), '.', 'Color', color);
             plot3(Sf_2(1), Sf_2(2), Sf_2(3), '.', 'Color', color);
-            quiver3(Sf_1(1), Sf_1(2), Sf_1(3), D(1), D(2), D(3), color);
+            quiver3(Sf_1(1), Sf_1(2), Sf_1(3), segment_vector(1), segment_vector(2), segment_vector(3), color);
 
-            Pf = Sf_1 + D / 2; % midpoint of Best Fit Segment
+            Pf = Sf_1 + segment_vector / 2; % midpoint of Best Fit Segment
             plot3(Pf(1), Pf(2), Pf(3), '.', 'Color', color); % plot mid point
 
             
@@ -228,7 +228,9 @@ classdef Helper
             text(Pf_1(1), Pf_1(2), Pf_1(3), num2str(sensor_on_ray_1), 'Color', color)
             text(Pf_2(1), Pf_2(2), Pf_2(3), num2str(sensor_on_ray_2), 'Color', color)
 
-            norm(Pf_2 - Pf_1);
+%             norm(Pf_2 - Pf_1);
+
+%             Pc = Pf_1 - S(:, sensor_on_ray_1 + 1);
 
             S_ex = S; % excluded sensors
             S_ex(:, sensor_on_ray_1 + 1) = []; % exclude sensor_on_ray_1

@@ -11,10 +11,12 @@ S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 
 %% Define Tracker Position and Orientation
 
-yaw = 45; % degrees
-pitch = 45;
-roll = 45;
-R = Helper.deg2dcm(yaw, pitch, roll);
+
+% R_actual = Helper.deg2dcm(45, 45, 45); % degrees
+R_actual = Helper.deg2dcm(0, 0, 0); % degrees
+R_sampled = R_actual; % no error
+
+R_sampled = Helper.deg2dcm(45, 0, 0); % sampled and real is different
 
 tracker_center = [0; 0; 1]; % center of tracker
 
@@ -25,13 +27,14 @@ tracker_center = [0; 0; 1]; % center of tracker
 clear detection
 
 INTRODUCE_ERRORS = false;
-% INTRODUCE_ERRORS = true;
+INTRODUCE_ERRORS = true;
 
 % detection(1).color = 'k';
 detection(1).B = [-1.789562; 5.251678; 2.641019];
 detection(1).sens = 0;
 detection(1).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_ERRORS
+    detection(1).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
 end
 
 detection(2).color = 'r';
@@ -39,7 +42,7 @@ detection(2).B = [1.734847; -4.475452; 2.665298];
 detection(2).sens = 2;
 detection(2).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_ERRORS
-    detection(2).r_error = Helper.deg2dcm(01,0,0); % zeros if exactly on sensor
+    detection(2).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
 end
 
 detection(3).color = 'g';
@@ -111,30 +114,30 @@ end
 
 %% Plot & Configure Detections
 
-% simulate D vector as if Rays fall directly on both of Sensors (ignores sensor dimensions)
+plot3(tracker_center(1), tracker_center(2), tracker_center(3), '^-', 'Color', 'k'); % plot Tracker center
+% text(tracker_center(1), tracker_center(2), tracker_center(3), '.', 'Color', 'k');
 
-
-plot3(tracker_center(1), tracker_center(2), tracker_center(3), 'r.-'); % plot center of drone at rays
-text(tracker_center(1), tracker_center(2), tracker_center(3), 'c', 'Color', 'r');
-
-P_1 = tracker_center + R * S(:, detection(1).sens + 1); % detection(1).sens as reference point
 
 for i = 1:length(detection)
     s_1 = (S(:, detection(i).sens + 1) - S(:, detection(1).sens + 1)); % relative to detection(1).sens
-    D_1 = R*s_1;
+    D_1_actual = R_actual*s_1;
+    D_1 = R_sampled*s_1;
     
 %     fprintf('Sensor Vector: \n');
 %     disp(D_1);
 
+    detection(i).D_1_actual = D_1_actual;
     detection(i).D_1 = D_1;
 end
 
+P_1 = tracker_center + R_actual * S(:, detection(1).sens + 1); % detection(1).sens as reference point
+
 for i = 2:length(detection)
-    D_1 = detection(i).D_1;
+    D_1_actual = detection(i).D_1_actual;
    
-    fprintf('Distance Between Sensors at detection %d & 1: %f\n', i, norm(D_1));
+    fprintf('Distance Between Sensors at detection %d & 1: %f\n', i, norm(D_1_actual));
     
-    quiver3(P_1(1), P_1(2), P_1(3), D_1(1), D_1(2), D_1(3), 'k'); % plot D_1 on rays
+    quiver3(P_1(1), P_1(2), P_1(3), D_1_actual(1), D_1_actual(2), D_1_actual(3), 'k'); % plot D_1_actual on rays
 end
 
 
@@ -142,17 +145,21 @@ end
 
 %% Plot & Configure Rays
 
-P_1 = tracker_center + R * S(:, detection(1).sens + 1); % detection(1).sens as reference point
+P_1 = tracker_center + R_actual * S(:, detection(1).sens + 1); % detection(1).sens as reference point
 
 for i = 1:length(detection)
     % Artibary point on a Ray in World Frame (in Meters), to generate the Ray Vector
     
-    Rp = P_1 + detection(i).D_1;
+    Rp = P_1 + detection(i).D_1_actual;
 
     plot3(Rp(1), Rp(2), Rp(3), 'k.-'); % plot Artibary point on Ray
 
     % Unit Vector of Ray from Base Stations
     B = detection(i).B;
+    
+    detection(i).Rp = Rp;
+    detection(i).Rp_dist = norm(Rp - B);
+    
     r = (Rp - B) / norm(Rp - B);
 
     r = detection(i).r_error * r;
@@ -192,16 +199,34 @@ end
 
 prev_Sf_1 = false;
 
-Sf_1_suggestions = [];
 d_1_suggestions = [];
+Sf_1_suggestions = [];
+Pc_suggestions = [];
 
 for i = 2:length(detection)
    
-    [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, detection(i).D_1);
-    Helper.plotSensors(detection(i).color, S, R, Sf_2, Sf_1, detection(i).sens, detection(1).sens, detection(i).D_1);
+    D_1 = detection(i).D_1;
+
+    [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, D_1);
     
-    Sf_1_suggestions = [Sf_1_suggestions , Sf_1];
+    fprintf('Magnitude of Segment Error for detection %d: %f mm\n', i, segment_error * 1000);
+    
+
+    Pf = Sf_1 + (Sf_2 - Sf_1) / 2; % midpoint of Best Fit Segment
+
+    Pf_1 = Pf - D_1 / 2;
+    Pf_2 = Pf + D_1 / 2;
+
+    Pc = Pf_1 - S(:, detection(1).sens + 1)
+            
+    diff_center = norm(Pc - tracker_center) * 1000 
+            
+    Helper.plotSensors(detection(i).color, S, R_sampled, Sf_2, Sf_1, detection(i).sens, detection(1).sens, D_1);
+    
+    
     d_1_suggestions = [d_1_suggestions , d_1];
+    Sf_1_suggestions = [Sf_1_suggestions , Sf_1];
+    Pc_suggestions = [Pc_suggestions , Pc];
     prev_Sf_1 = Sf_1;
     
     fprintf('Suggested Distance on Ray 1 by detection %d: %f\n', i, d_1);
@@ -212,18 +237,28 @@ for i = 2:length(detection)
     end
 end
 
-Sf_1_mean = mean(Sf_1_suggestions, 2)
-
 d_1_mean = mean(d_1_suggestions, 2)
+d_1_diff = norm(d_1_mean - detection(1).Rp_dist) * 1000
 
+Sf_1_mean = mean(Sf_1_suggestions, 2)
+Sf_1_diff = norm(Sf_1_mean - detection(1).Rp) * 1000
+
+
+
+
+Pc_mean = mean(Pc_suggestions, 2)
+Pc_diff = norm(Pc_mean - tracker_center) * 1000
+
+
+plot3(Pc_mean(1), Pc_mean(2), Pc_mean(3), '^-', 'Color', 'c');
 
 %% Plot End
 
 % legend({'detection(1).B', 'detection(2).B', 'Rp_1', 'Rp_2', 'Sa_1', 'Sa_2'});
 
 % view(0,0) % X & Z
-% view(0,90) % X & Y
-% zoom(50)
+view(0,90) % X & Y
+zoom(50)
 % view(90,0) % Y & Z
 
 % rotate3d on
