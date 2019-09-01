@@ -34,9 +34,9 @@ INTRODUCE_RAY_ERROR = false;
 INTRODUCE_RAY_ERROR = true;
 
 % RANDOM_ERROR_DEGREES = 0.001; % 1 BS = 30mm
-RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 4 BS 1.7mm
-% RANDOM_ERROR_DEGREES = 0.1; % 4 BS 21mm
-% RANDOM_ERROR_DEGREES = 1; % 4 BS mm
+RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
+% RANDOM_ERROR_DEGREES = 0.1; % 4 BS = 21mm
+% RANDOM_ERROR_DEGREES = 1; % 4 BS = mm
 
 BS_1 = [-1.789562; 5.251678; 2.641019];
 BS_2 = [1.734847; -4.475452; 2.665298];
@@ -63,7 +63,8 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(3).color = 'g';
-detection(3).B = BS_3;
+detection(3).B = BS_2;
+% detection(3).B = BS_3;
 detection(3).sens = 1;
 detection(3).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_RAY_ERROR
@@ -72,7 +73,8 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(4).color = 'b';
-detection(4).B = BS_4;
+detection(4).B = BS_1;
+% detection(4).B = BS_4;
 detection(4).sens = 3;
 detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on 
 if INTRODUCE_RAY_ERROR
