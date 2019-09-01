@@ -242,7 +242,6 @@ classdef Helper
 %             segment_error = norm( (Sf_2 - Sf_1) - D);
 
         end
-       
         
         function plotSensors(color, S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1, D_1)
 %             color = 'm';
@@ -300,6 +299,76 @@ classdef Helper
     
             R = Helper.deg2dcm( rand(1) ,rand(2),rand(3)); % random error
         end
+        
+        function [R, t] = rigidTransform3D(A, B)
+        
+            % ref: http://nghiaho.com/?page_id=671
+            % This function finds the optimal Rigid/Euclidean transform in 3D space
+            
+            % It expects as input a Nx3 matrix of 3D points.
+            % It returns R, t
+
+            % You can verify the correctness of the function by copying and pasting these commands:
+            %{
+
+            R = orth(rand(3,3)); % random rotation matrix
+
+            if det(R) < 0
+                V(:,3) *= -1;
+                R = V*U';
+            end
+
+            t = rand(3,1); % random translation
+
+            n = 10; % number of points
+            A = rand(n,3);
+            B = R*A' + repmat(t, 1, n);
+            B = B';
+
+            [ret_R, ret_t] = rigid_transform_3D(A, B);
+
+            A2 = (ret_R*A') + repmat(ret_t, 1, n)
+            A2 = A2'
+
+            % Find the error
+            err = A2 - B;
+            err = err .* err;
+            err = sum(err(:));
+            rmse = sqrt(err/n);
+
+            disp(sprintf("RMSE: %f", rmse));
+            disp("If RMSE is near zero, the function is correct!");
+
+            %}
+
+            % expects row data
+            if nargin ~= 2
+                error("Missing parameters");
+            end
+
+            assert(size(A) == size(B))
+
+            centroid_A = mean(A);
+            centroid_B = mean(B);
+
+            N = size(A,1);
+
+            H = (A - repmat(centroid_A, N, 1))' * (B - repmat(centroid_B, N, 1));
+
+            [U,S,V] = svd(H);
+
+            R = V*U';
+
+            if det(R) < 0
+                printf("Reflection detected\n");
+                V(:,3) *= -1;
+                R = V*U';
+            end
+
+            t = -R*centroid_A' + centroid_B';
+    
+        end
+        
     end
 end
 
