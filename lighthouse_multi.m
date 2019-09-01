@@ -1,7 +1,11 @@
 %% Define Sensor Positions Relative to Tracker Center
 
-sd_x = 3 / 100; % x-distance between sensors in Meters
-sd_y = 1.5 / 100; % y-distance between sensors in Meters
+% sd_x = 3 / 100; % x-distance between sensors in Meters
+% sd_y = 1.5 / 100; % y-distance between sensors in Meters
+
+sd_x = 8 / 100; % x-distance between sensors in Meters
+sd_y = 8 / 100; % y-distance between sensors in Meters
+% 8x8 in single BS with 0.01 degree error gives at most 50mm error, however in 3x1.5, it's 330mm, 6 times the error
 
 S = [];
 S = [S, [- sd_x / 2; sd_y / 2; 0]]; % Sensor 0
@@ -86,7 +90,7 @@ end
 
 
 SINGLE_BASESTATION = false;
-% SINGLE_BASESTATION = true;
+SINGLE_BASESTATION = true;
 
 if SINGLE_BASESTATION
     detection(2).B = detection(1).B; % single base station
