@@ -222,6 +222,7 @@ Dw_31 = D_31 - w_31;
 % ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
 
 % ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )  \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ((v\u)*v - u)
+% 0 = ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )  \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) - ((g\u)*g - u) \ ((v\u)*v - u)
 % don't know how to extract value R, likely require some kind of solve, because there will be a value of R that will satisfy = ((g\u)*g - u) \ ((v\u)*v - u)
             
 %% Plot Calc

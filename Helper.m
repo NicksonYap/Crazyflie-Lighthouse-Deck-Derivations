@@ -164,15 +164,29 @@ classdef Helper
             
 %             D = R*s;
             w = B_2 - B_1;
-            Dw = D - w;
+            
 %             m = v\u;
             m = transpose(u)*v;
+            
+%             Dw = D - w;
+            wD = w - D;
+            
 %             c = v\(Dw);
-            c = transpose(Dw)*v;
+%             c = transpose(Dw)*v;
+            c = transpose(-wD)*v;
 
             % 0 = s_f*( (v\u)*v - u ) + ( v\(Dw)*v - Dw );
             % s_f = - ((v\u)*v - u) \ ( v\(Dw)*v - Dw );
-            s_f = - (m*v - u) \ (c*v - Dw);
+%             s_f = - ((v\u)*v - u) \ ( v\(D - w)*v - ( D - w) );
+%             s_f =  ((v\u)*v - u) \ - ( v\(D - w)*v - ( D - w) );
+%             s_f =  ((v\u)*v - u) \  ( - v\(D - w)*v + ( D - w) );
+%             s_f =  ((v\u)*v - u) \  ( ( D - w) - v\(D - w)*v  );
+%             s_f =  ((v\u)*v - u) \  ( v\(w - D)*v - (w - D) );
+%             s_f =  ((v\u)*v - u) \  ( v\(wD)*v - wD );
+%             s_f =  ( u - (v\u)*v) \  ( wD - v\(wD)*v );
+%             s_f =  ( u - m*v ) \  ( wD + c*v );
+            s_f =  ( u - m*v ) \  ( wD + c*v );
+%             s_f = - (m*v - u) \ (c*v - Dw);
 
             % D_21 = R*s_21;
             % w_21 = B_2 - B_1;
@@ -192,6 +206,9 @@ classdef Helper
             % - ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = - ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
             % ((v\u)*v - u) \ ( v\( R*s_21 - w_21 )*v - ( R*s_21 - w_21 ) ) = ((g\u)*g - u) \ ( g\( R*s_31 - w_31 )*g - ( R*s_31 - w_31 ) )
 
+%             t_f = (v\u)*s_f + v\(Dw); % linear equation
+%             t_f = (v\u)*s_f + v\(D - w); % linear equation
+%             t_f = (v\u)*s_f + v\(-wD); % linear equation
             t_f = m*s_f + c; % linear equation
 
             Sf_1 = B_1 + s_f * u;
@@ -209,13 +226,15 @@ classdef Helper
 %             D = R*s;
             w = B_2 - B_1;
             Dw = D - w;
+            wD = w - D;
 %             m = v\u;
             m = transpose(u)*v;
 %             c = v\(Dw);
             c = transpose(Dw)*v;
 
             
-            t_f = m*s_f + c; % linear equation
+            t_f = (v\u)*s_f + v\(-wD); % linear equation
+%             t_f = m*s_f + c; % linear equation
 
 %             Sf_1 = B_1 + s_f * u;
 %             Sf_2 = B_2 + t_f * v;
