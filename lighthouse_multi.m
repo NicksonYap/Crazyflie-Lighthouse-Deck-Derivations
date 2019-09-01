@@ -11,12 +11,16 @@ S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 
 %% Define Tracker Position and Orientation
 
+INTRODUCE_ORIENTATION_ERROR = false;
+% INTRODUCE_ORIENTATION_ERROR = true;
 
 % R_actual = Helper.deg2dcm(45, 45, 45); % degrees
 R_actual = Helper.deg2dcm(0, 0, 0); % degrees
 R_sampled = R_actual; % no error
 
-R_sampled = Helper.deg2dcm(45, 0, 0); % sampled and real is different
+if INTRODUCE_ORIENTATION_ERROR
+    R_sampled = Helper.deg2dcm(45, 0, 0); % sampled and real is different
+end
 
 tracker_center = [0; 0; 1]; % center of tracker
 
@@ -26,40 +30,54 @@ tracker_center = [0; 0; 1]; % center of tracker
 % detection number 1 will serve as reference point in calculations 
 clear detection
 
-INTRODUCE_ERRORS = false;
-INTRODUCE_ERRORS = true;
+INTRODUCE_RAY_ERROR = false;
+INTRODUCE_RAY_ERROR = true;
+
+% RANDOM_ERROR_DEGREES = 0.001; % 1 BS = 30mm
+RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 4 BS 1.7mm
+% RANDOM_ERROR_DEGREES = 0.1; % 4 BS 21mm
+% RANDOM_ERROR_DEGREES = 1; % 4 BS mm
+
+BS_1 = [-1.789562; 5.251678; 2.641019];
+BS_2 = [1.734847; -4.475452; 2.665298];
+BS_3 = [-1.759562; -4.505452; 2.635298];
+BS_4 = [1.729562; 5.251678; 2.641019];
+
 
 detection(1).color = 'k';
-detection(1).B = [-1.789562; 5.251678; 2.641019];
+detection(1).B = BS_1;
 detection(1).sens = 0;
 detection(1).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
-if INTRODUCE_ERRORS
-    detection(1).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+if INTRODUCE_RAY_ERROR
+%     detection(1).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+    detection(1).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
 
 detection(2).color = 'r';
-detection(2).B = [1.734847; -4.475452; 2.665298];
+detection(2).B = BS_2;
 detection(2).sens = 2;
 detection(2).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
-if INTRODUCE_ERRORS
-    detection(2).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+if INTRODUCE_RAY_ERROR
+%     detection(2).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+    detection(2).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
 
 detection(3).color = 'g';
-detection(3).B = [-1.759562; -2.005452; 2.635298];
-detection(3).B = [-1.759562; -4.505452; 2.635298];
+detection(3).B = BS_3;
 detection(3).sens = 1;
 detection(3).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
-if INTRODUCE_ERRORS
-    detection(3).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+if INTRODUCE_RAY_ERROR
+%     detection(3).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+    detection(3).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
 
 detection(4).color = 'b';
-detection(4).B = [1.729562; 5.251678; 2.641019];
+detection(4).B = BS_4;
 detection(4).sens = 3;
 detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on 
-if INTRODUCE_ERRORS
-    detection(4).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+if INTRODUCE_RAY_ERROR
+%     detection(4).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
+    detection(4).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
 
 
@@ -71,6 +89,7 @@ SINGLE_BASESTATION = false;
 if SINGLE_BASESTATION
     detection(2).B = detection(1).B; % single base station
     detection(3).B = detection(1).B; % single base station
+    detection(4).B = detection(1).B; % single base station
 end
 
 
@@ -281,8 +300,8 @@ fprintf('Mean Tracker Center error %f mm\n',  Pc_diff);
 % legend({'detection(1).B', 'detection(2).B', 'Rp_1', 'Rp_2', 'Sa_1', 'Sa_2'});
 
 % view(0,0) % X & Z
-view(0,90) % X & Y
-zoom(50)
+% view(0,90) % X & Y
+% zoom(50)
 % view(90,0) % Y & Z
 
 % rotate3d on

@@ -271,6 +271,16 @@ classdef Helper
            R = angle2dcm(deg2rad(yaw), deg2rad(pitch), deg2rad(roll)) ;
         end
         
+        function r = randFloat(a, b, count)
+            %ref: https://www.mathworks.com/matlabcentral/answers/315479-how-to-create-random-double-in-specific-range#answer_246025
+            r = (b-a).*rand(1, count, 'double');
+        end
+        
+        function R = randDeg2Dcm(degrees)
+            rand = Helper.randFloat( -degrees/2 , +degrees/2 , 3);
+    
+            R = Helper.deg2dcm( rand(1) ,rand(2),rand(3)); % random error
+        end
     end
 end
 
