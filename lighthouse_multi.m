@@ -29,7 +29,7 @@ clear detection
 INTRODUCE_ERRORS = false;
 INTRODUCE_ERRORS = true;
 
-% detection(1).color = 'k';
+detection(1).color = 'k';
 detection(1).B = [-1.789562; 5.251678; 2.641019];
 detection(1).sens = 0;
 detection(1).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
@@ -217,9 +217,9 @@ for i = 2:length(detection)
     Pf_1 = Pf - D_1 / 2;
     Pf_2 = Pf + D_1 / 2;
 
-    Pc = Pf_1 - S(:, detection(1).sens + 1)
+    Pc = Pf_1 - S(:, detection(1).sens + 1);
             
-    diff_center = norm(Pc - tracker_center) * 1000 
+%     diff_center = norm(Pc - tracker_center) * 1000 ;
             
     Helper.plotSensors(detection(i).color, S, R_sampled, Sf_2, Sf_1, detection(i).sens, detection(1).sens, D_1);
     
@@ -237,20 +237,44 @@ for i = 2:length(detection)
     end
 end
 
-d_1_mean = mean(d_1_suggestions, 2)
-d_1_diff = norm(d_1_mean - detection(1).Rp_dist) * 1000
+d_1_mean = mean(d_1_suggestions, 2);
+d_1_diff = norm(d_1_mean - detection(1).Rp_dist) * 1000;
 
-Sf_1_mean = mean(Sf_1_suggestions, 2)
-Sf_1_diff = norm(Sf_1_mean - detection(1).Rp) * 1000
+%  Rp_mean = detection(1).B + d_1_mean * detection(1).r;
+%  plot3(Rp_mean(1), Rp_mean(2), Rp_mean(3), 'o', 'Color', detection(1).color); % plot sensor_on_ray_1
+    
+fprintf('Mean Distance on Ray 1: %f with error %f mm\n', d_1_mean, d_1_diff);
+    
+for i = 2:length(detection)
+   
+    D_1 = detection(i).D_1;
+
+    Rpx_dist = Helper.rayDistFromRayDist(detection(i).B, detection(1).B, detection(i).r, detection(1).r, D_1, d_1_mean);
+ 
+    Rpx_dist_diff = norm(Rpx_dist - detection(i).Rp_dist) * 1000;
+
+%     Rpx = detection(i).B + Rpx_dist * detection(i).r;
+%     plot3(Rpx(1), Rpx(2), Rpx(3), 'o', 'Color', detection(i).color); % plot sensor_on_ray_1
+
+    fprintf('Mean Distance on Ray %d: %f with error %f mm\n', i, Rpx_dist, Rpx_dist_diff);
+end
+
+
+
+Sf_1_mean = mean(Sf_1_suggestions, 2);
+Sf_1_diff = norm(Sf_1_mean - detection(1).Rp) * 1000; % same  as d_1_diff
 
 
 
 
-Pc_mean = mean(Pc_suggestions, 2)
-Pc_diff = norm(Pc_mean - tracker_center) * 1000
+Pc_mean = mean(Pc_suggestions, 2);
+Pc_diff = norm(Pc_mean - tracker_center) * 1000;
 
 
 plot3(Pc_mean(1), Pc_mean(2), Pc_mean(3), '^-', 'Color', 'c');
+fprintf('Mean Tracker Center:\n');
+disp(Pc_mean);
+fprintf('Mean Tracker Center error %f mm\n',  Pc_diff);
 
 %% Plot End
 

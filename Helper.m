@@ -204,6 +204,27 @@ classdef Helper
 
         end
         
+        function t_f = rayDistFromRayDist(B_2, B_1, v, u, D, s_f)
+            
+%             D = R*s;
+            w = B_2 - B_1;
+            Dw = D - w;
+%             m = v\u;
+            m = transpose(u)*v;
+%             c = v\(Dw);
+            c = transpose(Dw)*v;
+
+            
+            t_f = m*s_f + c; % linear equation
+
+%             Sf_1 = B_1 + s_f * u;
+%             Sf_2 = B_2 + t_f * v;
+            
+%             segment_error = norm( (Sf_2 - Sf_1) - D);
+
+        end
+       
+        
         function plotSensors(color, S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1, D_1)
 %             color = 'm';
             
