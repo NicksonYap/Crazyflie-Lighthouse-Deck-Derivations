@@ -42,7 +42,8 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 % RANDOM_ERROR_DEGREES = 0.1; % 4 BS = 21mm
 % RANDOM_ERROR_DEGREES = 1; % 4 BS = mm
 
-BS_1 = [-1.789562; 5.251678; 2.641019];
+BS_1 = [0; 0; 2.641019]; % from the top % 1 BS, 8x8 from the top only with 0.01 degree error only gives 3mm error!
+% BS_1 = [-1.789562; 5.251678; 2.641019];
 BS_2 = [1.734847; -4.475452; 2.665298];
 BS_3 = [-1.759562; -4.505452; 2.635298];
 BS_4 = [1.729562; 5.251678; 2.641019];
