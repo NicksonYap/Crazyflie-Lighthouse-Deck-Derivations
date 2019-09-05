@@ -361,7 +361,7 @@ classdef Helper
 
             if det(R) < 0
                 printf("Reflection detected\n");
-                V(:,3) *= -1;
+                V(:,3) = -1*V(:,3);
                 R = V*U';
             end
 
