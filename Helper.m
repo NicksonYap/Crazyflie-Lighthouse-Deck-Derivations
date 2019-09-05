@@ -165,15 +165,19 @@ classdef Helper
 %             D = R*s;
             w = B_2 - B_1;
             
+            
+            Dw = D - w;
+            wD = w - D;
+            
 %             m = v\u;
             m = transpose(u)*v;
             
-%             Dw = D - w;
-            wD = w - D;
-            
+%             Dw*c = v
 %             c = v\(Dw);
-%             c = transpose(Dw)*v;
-            c = transpose(-wD)*v;
+%             c = linsolve(v,Dw);
+            c = transpose(Dw)*v;
+%             c = transpose(-wD)*v;
+%               c = linsolve(v,-wD);
 
             % 0 = s_f*( (v\u)*v - u ) + ( v\(Dw)*v - Dw );
             % s_f = - ((v\u)*v - u) \ ( v\(Dw)*v - Dw );
@@ -185,8 +189,91 @@ classdef Helper
 %             s_f =  ((v\u)*v - u) \  ( v\(wD)*v - wD );
 %             s_f =  ( u - (v\u)*v) \  ( wD - v\(wD)*v );
 %             s_f =  ( u - m*v ) \  ( wD + c*v );
-            s_f =  ( u - m*v ) \  ( wD + c*v );
+            s_f =  ( u - m*v ) \  ( wD + c*v )
 %             s_f = - (m*v - u) \ (c*v - Dw);
+
+            w
+            wD
+            Dw
+
+            u
+            v
+            u_t = transpose(u)
+
+            m
+            
+            Dw_t = transpose(Dw)
+
+            c
+            
+            vc = v*c
+            
+            vm = v*m
+            
+            A = ( u - vm )
+            
+            B = ( wD + vc )
+
+            
+            s_f = A\B
+            
+            s_f = linsolve(A,B)
+
+            
+            A_pinv = pinv(A)
+            s_f = A_pinv*B
+            
+         
+            
+            
+            %{
+            
+            A = [A, zeros(3,1), zeros(3,1)]; % cast to square matrix
+            
+            
+            [U,S,V] = svd(A)
+
+            D_inv = S;
+            D_inv(1) = 1/D_inv(1); % conditional element-wise invert (this case only first element), ref: https://www.cse.unr.edu/~bebis/CS791E/Notes/SVD.pdf (page 2)
+           
+            D_inv
+            
+            A_inv = V*D_inv*transpose(U); %ref: https://math.stackexchange.com/a/1939983/699426
+
+            A_inv = A_inv(1,:) %only first row
+            s_f = A_inv*B
+            
+            A = [A, zeros(3,1), zeros(3,1)]; % cast to square matrix
+            
+            
+            %}
+            
+            
+
+            U = [-0.729786634; 0.681639731; -0.052715674]
+            S = [0.986955404]
+            V = [-1]
+
+            D_inv = S;
+            D_inv(1) = 1/D_inv(1); % conditional element-wise invert (this case only first element), ref: https://www.cse.unr.edu/~bebis/CS791E/Notes/SVD.pdf (page 2)
+           
+            D_inv
+            
+            VD_inv = V*D_inv
+            
+            U_t = transpose(U)
+            
+            A_inv = VD_inv*U_t; %ref: https://math.stackexchange.com/a/1939983/699426
+
+            A_inv = A_inv(1,:) %only first row
+            s_f = A_inv*B
+            
+            
+            
+            
+            
+            
+            
 
             % D_21 = R*s_21;
             % w_21 = B_2 - B_1;
@@ -210,9 +297,19 @@ classdef Helper
 %             t_f = (v\u)*s_f + v\(D - w); % linear equation
 %             t_f = (v\u)*s_f + v\(-wD); % linear equation
             t_f = m*s_f + c; % linear equation
+            
+            x0 = s_f
+            mx0 = m*x0
+            x1 = mx0 + c % linear equation
 
-            Sf_1 = B_1 + s_f * u;
-            Sf_2 = B_2 + t_f * v;
+            ux0 = u*x0
+            vx1 = v*x1
+            
+            pt0 = B_1 + ux0
+            pt1 = B_2 + vx1
+            
+            Sf_1 = B_1 + s_f * u
+            Sf_2 = B_2 + t_f * v
             
             segment_error = norm( (Sf_2 - Sf_1) - D);
 
@@ -233,7 +330,8 @@ classdef Helper
             c = transpose(Dw)*v;
 
             
-            t_f = (v\u)*s_f + v\(-wD); % linear equation
+            t_f = (v\u)*s_f + v\(Dw); % linear equation
+%             t_f = (v\u)*s_f + v\(-wD); % linear equation
 %             t_f = m*s_f + c; % linear equation
 
 %             Sf_1 = B_1 + s_f * u;
