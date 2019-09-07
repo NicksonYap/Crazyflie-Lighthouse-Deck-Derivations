@@ -14,12 +14,12 @@ S = [S, [sd_x / 2; sd_y / 2; 0]]; % Sensor 2
 S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 
 %% Yaw sensors by 180 deg
-S = Helper.swapCols(S, 1, 2);
-S = Helper.swapCols(S, 3, 4);
-
-S = Helper.swapCols(S, 1, 3);
-S = Helper.swapCols(S, 2, 4);
-%%  
+% S = Helper.swapCols(S, 1, 2);
+% S = Helper.swapCols(S, 3, 4);
+% 
+% S = Helper.swapCols(S, 1, 3);
+% S = Helper.swapCols(S, 2, 4);
+% %%  
 
 %% Define Tracker Position and Orientation
 
@@ -27,6 +27,7 @@ INTRODUCE_ORIENTATION_ERROR = false;
 % INTRODUCE_ORIENTATION_ERROR = true;
 
 % R_actual = Helper.deg2dcm(45, 45, 45); % degrees
+% R_actual = Helper.deg2dcm(0, 0, -45); % degrees
 R_actual = Helper.deg2dcm(0, 0, 0); % degrees
 
 R_sampled = R_actual; % no error
@@ -60,8 +61,10 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 % BS_3 = [-1.759562; -4.505452; 2.635298];
 % BS_4 = [1.729562; 5.251678; 2.641019];
 
-BS_1 = [-1.73622894; -2.61173797; 2.6828599];
-BS_2 = [1.37233901; 2.37578106; 2.73936605];
+% BS_1 = [-1.73622894; -2.61173797; 2.6828599];
+% BS_2 = [1.37233901; 2.37578106; 2.73936605];
+BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
+BS_2 = [-1.37233901; -2.37578106; 2.73936605];
 
 detection(1).color = 'k';
 detection(1).B = BS_1;
@@ -81,7 +84,8 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(3).color = 'g';
-detection(3).B = BS_2;
+detection(3).B = BS_1;
+% detection(3).B = BS_2;
 % detection(3).B = BS_3;
 detection(3).sens = 1;
 detection(3).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
@@ -91,7 +95,8 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(4).color = 'b';
-detection(4).B = BS_1;
+% detection(4).B = BS_1;
+detection(4).B = BS_2;
 % detection(4).B = BS_4;
 detection(4).sens = 3;
 detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on 
