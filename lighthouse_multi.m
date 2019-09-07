@@ -31,12 +31,14 @@ tracker_center = [0; 0; 1]; % center of tracker
 
 %% Define Base Stations & Detections
 
+% plot_ray_length = 10;
+plot_ray_length = 5;
 
 % detection number 1 will serve as reference point in calculations 
 clear detection
 
 INTRODUCE_RAY_ERROR = false;
-INTRODUCE_RAY_ERROR = true;
+% INTRODUCE_RAY_ERROR = true;
 
 % RANDOM_ERROR_DEGREES = 0.001; % 1 BS = 30mm
 RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
@@ -304,7 +306,6 @@ for i = 1:length(detection)
     detection(i).r = r;
     
     % Simulated End of Ray
-    plot_ray_length = 10;
     Ray = plot_ray_length * r;
 
     quiver3(B(1), B(2),B(3), Ray(1), Ray(2), Ray(3), 'k'); % plot Rays
