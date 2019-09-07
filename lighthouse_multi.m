@@ -68,8 +68,21 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
 BS_2 = [-1.37233901; -2.37578106; 2.73936605];
 
+bs(1).origin = BS_1;
+bs(1).mat = Helper.deg2dcm(0, 0, 0);
+
+bs(2).origin = BS_2;
+bs(2).mat = Helper.deg2dcm(180, 0, 0);
+
+bs(3).origin = BS_3;
+bs(3).mat = Helper.deg2dcm(0, 0, 0);
+
+bs(4).origin = BS_4;
+bs(4).mat = Helper.deg2dcm(0, 0, 0);
+
+
 detection(1).color = 'k';
-detection(1).B = BS_1;
+detection(1).bs = bs(1);
 detection(1).sens = 0;
 detection(1).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_RAY_ERROR
@@ -77,7 +90,7 @@ if INTRODUCE_RAY_ERROR
     detection(1).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
 detection(2).color = 'r';
-detection(2).B = BS_2;
+detection(2).bs = bs(2);
 detection(2).sens = 2;
 detection(2).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_RAY_ERROR
@@ -86,9 +99,9 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(3).color = 'g';
-detection(3).B = BS_1;
-% detection(3).B = BS_2;
-% detection(3).B = BS_3;
+detection(3).bs = bs(1);
+% detection(3).bs = bs(2);
+% detection(3).bs = bs(3);
 detection(3).sens = 1;
 detection(3).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on sensor
 if INTRODUCE_RAY_ERROR
@@ -97,9 +110,9 @@ if INTRODUCE_RAY_ERROR
 end
 
 detection(4).color = 'b';
-% detection(4).B = BS_1;
-detection(4).B = BS_2;
-% detection(4).B = BS_4;
+% detection(4).bs = bs(1);
+detection(4).bs = bs(2);
+% detection(4).bs = bs(4);
 detection(4).sens = 3;
 detection(4).r_error = Helper.deg2dcm(0,0,0); % zeros if exactly on 
 if INTRODUCE_RAY_ERROR
@@ -111,7 +124,7 @@ end
 %% Real Data
 
 USE_REAL_RAY = false;
-USE_REAL_RAY = true;
+% USE_REAL_RAY = true;
 
 if USE_REAL_RAY
     clear detection
@@ -124,6 +137,13 @@ if USE_REAL_RAY
     
     BSR_1 = [[-0.516858,  0.607955, -0.602701]; [0.025856, 0.714796, 0.698855]; [ 0.855681,  0.345626, -0.385167]];
     BSR_2 = [[ 0.534727, -0.598345,  0.596699]; [0.082423, 0.739697, 0.667874]; [-0.840995, -0.307949,  0.444853]];
+
+
+    bs(1).origin = BS_1;
+    bs(1).mat = BSR_1;
+
+    bs(2).origin = BS_2;
+    bs(2).mat = BSR_2;
 
 
     %so then the crazyflie should also orient differently
@@ -147,26 +167,25 @@ if USE_REAL_RAY
 %     tracker_center = ([-2.21150947; 2.39448023; -1.6517576] + [-2.19172335; 2.38026118; -1.65189958])/2; % center of tracker
 
     detection(1).color = 'k';
-    detection(1).B = BS_1;
-    detection(1).BR = BSR_1;
+    detection(1).bs = bs(1);
     detection(1).sens = 0;
     
     detection(1).sens = 0;
     detection(1).real_r = [0.798410177; -0.577826262; 0.169288218];
     
-%     detection(1).B = BS_1;
+%     detection(1).bs = bs(1);
 %     detection(1).sens = 3;
 %     detection(1).real_r = [0.79735142; -0.581848264; 0.160261855];
 
-%     detection(1).B = BS_1;
+%     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
 %     detection(1).real_r = [0.798819661; -0.577314794; 0.169101238];
 
-%     detection(1).B = BS_1;
+%     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
 %     detection(1).real_r = [0.798809946; -0.577327847; 0.169102848];
 
-%     detection(1).B = BS_1;
+%     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
 %     detection(1).real_r = [0.776623249; -0.609121561; 0.160710543];
 
@@ -175,26 +194,25 @@ if USE_REAL_RAY
 
 
     detection(2).color = 'r';
-    detection(2).B = BS_2;
-    detection(2).BR = BSR_2;
+    detection(2).bs = bs(2);
     detection(2).sens = 2;
     
     detection(2).sens = 1;
     detection(2).real_r = [-0.478063911; -0.568822145; -0.669249952];
 
-%     detection(2).B = BS_2;
+%     detection(2).bs = bs(2);
 %     detection(2).sens = 3;
 %     detection(2).real_r = [-0.47880125; -0.564612567; -0.672280788];
 
-%     detection(2).B = BS_1;
+%     detection(2).bs = bs(1);
 %     detection(2).sens = 2;
 %     detection(2).real_r = [0.799880087; -0.578143716; 0.16106534];
 
-%     detection(2).B = BS_1;
+%     detection(2).bs = bs(1);
 %     detection(2).sens = 3;
 %     detection(2).real_r = [0.801220775; -0.576445818; 0.160486817];
 
-%     detection(2).B = BS_1;
+%     detection(2).bs = bs(1);
 %     detection(2).sens = 3;
 %     detection(2).real_r = [0.778907955; -0.608527899; 0.151647255];
 end
@@ -218,9 +236,9 @@ SINGLE_BASESTATION = false;
 % SINGLE_BASESTATION = true;
 
 if SINGLE_BASESTATION
-    detection(2).B = detection(1).B; % single base station
-    detection(3).B = detection(1).B; % single base station
-    detection(4).B = detection(1).B; % single base station
+    detection(2).bs = detection(1).bs; % single base station
+    detection(3).bs = detection(1).bs; % single base station
+    detection(4).bs = detection(1).bs; % single base station
 end
 
 
@@ -249,20 +267,20 @@ hold on
 %% Plot Basestations
 
 for i = 1:length(detection)
-    B = detection(i).B;
+    B = detection(i).bs.origin;
     
     plot3(B(1), B(2), B(3), 'b^-'); % plot Base Station
     text(B(1), B(2), B(3), num2str(i), 'Color', 'r')
     
-    if isfield(detection(i), 'BR') && ~isempty(detection(i).BR)
-        Helper.plotRotMat(B, detection(i).BR, 0.5, 'b');
+    if isfield(detection(i).bs, 'mat') && ~isempty(detection(i).bs.mat)
+        Helper.plotRotMat(B, detection(i).bs.mat, 0.5, 'b');
     end
 end
 
 for i = 2:length(detection)
     % distance between Base Stations
-    B = detection(i).B;
-    fprintf('Distance Between BS at detection %d & 1: %f\n', i, norm(B - detection(1).B));
+    B = detection(i).bs.origin;
+    fprintf('Distance Between BS at detection %d & 1: %f\n', i, norm(B - detection(1).bs.origin));
 end
 
 %% Plot & Configure Detections
@@ -304,7 +322,7 @@ for i = 1:length(detection)
     
 
     % Unit Vector of Ray from Base Stations
-    B = detection(i).B;
+    B = detection(i).bs.origin;
         
     if ~USE_REAL_RAY
         % Artibary point on a Ray in World Frame (in Meters), to generate the Ray Vector
@@ -345,7 +363,7 @@ for i = 1:size(detection_pairs(), 1)
     first = detection_pair(1);
     second = detection_pair(2);
     
-    [Sc_1, Sc_2, dist, dir, vec] = shortestSegment(detection(first).B, detection(first).r, detection(second).B, detection(second).r);
+    [Sc_1, Sc_2, dist, dir, vec] = shortestSegment(detection(first).bs.origin, detection(first).r, detection(second).bs.origin, detection(second).r);
 %     fprintf('Shortest Distance Between Rays from BS 2 & 3: %f\n', dist);
     plot3(Sc_1(1), Sc_1(2), Sc_1(3), 'b.-', Sc_2(1), Sc_2(2), Sc_2(3), 'y.-'); % plot Shortest Segment points
     quiver3(Sc_1(1), Sc_1(2), Sc_1(3), vec(1), vec(2), vec(3), 'y'); % plot Shortest Segment vector
@@ -369,7 +387,7 @@ for i = 2:length(detection)
    
     D_1 = detection(i).D_1;
 
-    [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).B, detection(1).B, detection(i).r, detection(1).r, D_1);
+    [Sf_2, Sf_1, d_2, d_1, segment_error] = Helper.bestFitBetweenRays(detection(i).bs.origin, detection(1).bs.origin, detection(i).r, detection(1).r, D_1);
     
     fprintf('Magnitude of Segment Error for detection %d: %f mm\n', i, segment_error * 1000);
     
@@ -400,7 +418,7 @@ for i = 2:length(detection)
 end
 
 
-%  Rp_mean = detection(1).B + d_1_mean * detection(1).r;
+%  Rp_mean = detection(1).bs.origin + d_1_mean * detection(1).r;
 %  plot3(Rp_mean(1), Rp_mean(2), Rp_mean(3), 'o', 'Color', detection(1).color); % plot sensor_on_ray_1
     
 d_1_mean = mean(d_1_suggestions, 2);
@@ -415,10 +433,10 @@ for i = 2:length(detection)
    
     D_1 = detection(i).D_1;
 
-    Rpx_dist = Helper.rayDistFromRayDist(detection(i).B, detection(1).B, detection(i).r, detection(1).r, D_1, d_1_mean);
+    Rpx_dist = Helper.rayDistFromRayDist(detection(i).bs.origin, detection(1).bs.origin, detection(i).r, detection(1).r, D_1, d_1_mean);
  
 
-%     Rpx = detection(i).B + Rpx_dist * detection(i).r;
+%     Rpx = detection(i).bs.origin + Rpx_dist * detection(i).r;
 %     plot3(Rpx(1), Rpx(2), Rpx(3), 'o', 'Color', detection(i).color); % plot sensor_on_ray_1
 
     if ~USE_REAL_RAY
@@ -454,7 +472,7 @@ end
 
 %% Plot End
 
-% legend({'detection(1).B', 'detection(2).B', 'Rp_1', 'Rp_2', 'Sa_1', 'Sa_2'});
+% legend({'detection(1).bs.origin', 'detection(2).bs.origin', 'Rp_1', 'Rp_2', 'Sa_1', 'Sa_2'});
 
 % view(0,0) % X & Z
 % view(0,90) % X & Y
