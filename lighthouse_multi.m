@@ -13,6 +13,14 @@ S = [S, [- sd_x / 2; - sd_y / 2; 0]]; % Sensor 1
 S = [S, [sd_x / 2; sd_y / 2; 0]]; % Sensor 2
 S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 
+%% Yaw sensors by 180 deg
+S = Helper.swapCols(S, 1, 2);
+S = Helper.swapCols(S, 3, 4);
+
+S = Helper.swapCols(S, 1, 3);
+S = Helper.swapCols(S, 2, 4);
+%%  
+
 %% Define Tracker Position and Orientation
 
 INTRODUCE_ORIENTATION_ERROR = false;
