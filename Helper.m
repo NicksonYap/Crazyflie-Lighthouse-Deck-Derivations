@@ -362,6 +362,30 @@ classdef Helper
 
         end
         
+        function plotRotMat(Or, R, length, color)
+            a = [1; 0; 0];
+            b = [0; 1; 0];
+            c = [0; 0; 1];
+            
+            a_r = R*a*length
+            b_r = R*b*length
+            c_r = R*c*length
+            
+            quiver3(Or(1), Or(2), Or(3), a_r(1), a_r(2), a_r(3), color);
+            quiver3(Or(1), Or(2), Or(3), b_r(1), b_r(2), b_r(3), color);
+            quiver3(Or(1), Or(2), Or(3), c_r(1), c_r(2), c_r(3), color);
+            
+            
+%             %plot square plane - ref: https://www.mathworks.com/matlabcentral/answers/317359-how-to-fill-a-3d-plot
+%              X = [0; 1; 1; 0];
+%              Y = [0; 0; 1; 1];
+%              Z = [0; 0; 0; 0];
+% %              C=[0; 0; 0; 0]; %gradient
+%              C=[0.5 0.5 0.5];
+% 
+%             fill3(X,Y,Z,C);
+        end
+        
         function plotSensors(color, S, R, Sf_2, Sf_1, sensor_on_ray_2, sensor_on_ray_1, D_1)
 %             color = 'm';
             

@@ -246,6 +246,8 @@ for i = 1:length(detection)
     
     plot3(B(1), B(2), B(3), 'b^-'); % plot Base Station
     text(B(1), B(2), B(3), num2str(i), 'Color', 'r')
+
+    Helper.plotRotMat(B, R_actual, 0.5, 'b');
 end
 
 for i = 2:length(detection)
@@ -253,7 +255,6 @@ for i = 2:length(detection)
     B = detection(i).B;
     fprintf('Distance Between BS at detection %d & 1: %f\n', i, norm(B - detection(1).B));
 end
-
 
 %% Plot & Configure Detections
 
