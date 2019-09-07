@@ -390,7 +390,9 @@ classdef Helper
 
             S_ex = S; % excluded sensors
             S_ex(:, sensor_on_ray_1 + 1) = []; % exclude sensor_on_ray_1
-            S_ex(:, sensor_on_ray_2 + 1 - 1) = []; % exclude sensor_on_ray_2
+            if sensor_on_ray_1 ~= sensor_on_ray_2
+                S_ex(:, sensor_on_ray_2 + 1 - 1) = []; % exclude sensor_on_ray_2
+            end
 
             for i = 1 : size(S_ex(), 2)
                 Sx = S_ex(:, i);
