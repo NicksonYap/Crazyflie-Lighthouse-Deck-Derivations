@@ -15,17 +15,18 @@ classdef Helper
             % checks:
             
             % floating point equality ref: https://www.mathworks.com/help/matlab/ref/eq.html
-            tol = eps(0.5);
+%             tol = eps(0.5);
+            tol = eps(1.0);
             
-            if abs(norm(a_x) - norm(b_x)) >= tol || abs(norm(a_y) - norm(b_y)) >= tol
+            if abs(norm(a_x) - norm(b_x)) > tol || abs(norm(a_y) - norm(b_y)) > tol
                 error('Magnitudes mismatch')
             end
             
-            if abs( dot(a_x, a_y) - dot(b_x, b_y)) >= tol 
+            if abs( dot(a_x, a_y) - dot(b_x, b_y)) > tol 
                 error('Dot products mismatch')
             end
             
-            if abs( norm(cross(a_x, a_y)) - norm(cross(b_x, b_y)) ) >= tol 
+            if abs( norm(cross(a_x, a_y)) - norm(cross(b_x, b_y)) ) > tol 
                 error('Magnitude of cross products mismatch')
             end
             
@@ -187,16 +188,44 @@ classdef Helper
             % BS_1 = [-2.61173797; 2.6828599; -1.73622894]
 
             BS_1 = Helper.swapRows(BS_1, 1, 3);
-            BS_1 = Helper.swapRows(BS_1, 2, 3)
+            BS_1 = Helper.swapRows(BS_1, 2, 3);
 
 
             % BS_1 = [-1.73622894; -2.61173797; 2.6828599];
 
             BS_1 = Helper.flipRow(BS_1, 1);
-            BS_1 = Helper.flipRow(BS_1, 2)
+            BS_1 = Helper.flipRow(BS_1, 2);
 
 
             % BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
+        end
+        
+        function R_2 = cfToRealRot(R_1)
+%             R_1 = R_1/norm(R_1); %make sure normalized
+            R_1 = quat2rotm(quatnormalize(rotm2quat(R_1))) % Orthonormalize - ref: https://www.codefull.net/2017/07/orthonormalize-a-rotation-matrix/
+            
+            a = [1; 0; 0];
+            b = [0; 1; 0];
+            c = [0; 0; 1];
+            
+            
+            a_r = R_1*a;
+            b_r = R_1*b;
+            c_r = R_1*c;
+
+            a_r = Helper.cfToReal(a_r);
+            b_r = Helper.cfToReal(b_r);
+            c_r = Helper.cfToReal(c_r);
+
+            
+            R_2_xy = Helper.planeRot(a, b, a_r, b_r);
+            R_2_yz = Helper.planeRot(b, c, b_r, c_r);
+            
+            R_2(:,1) = R_2_xy(:,1)
+            R_2(:,2) = R_2_xy(:,2)
+%             R_2(:,2) = R_2_yx(:,2)
+            R_2(:,3) = R_2_yz(:,3)
+            % return
         end
         
         function [Sf_2, Sf_1, t_f, s_f, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)

@@ -63,16 +63,22 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 % BS_3 = [-1.759562; -4.505452; 2.635298];
 % BS_4 = [1.729562; 5.251678; 2.641019];
 
+BSR_1 = Helper.deg2dcm(0, 0, 0);
+BSR_2 = Helper.deg2dcm(180, 0, 0);
+BSR_3 = Helper.deg2dcm(0, 0, 0);
+BSR_4 = Helper.deg2dcm(0, 0, 0);
+
+
 
 
 BS_1 = Helper.cfToReal([-2.61173797; 2.6828599; -1.73622894])
 BS_2 = Helper.cfToReal([ 2.37578106; 2.73936605; 1.37233901])
 
+BSR_1 = Helper.cfToRealRot([[-0.516858,  0.607955, -0.602701]; [0.025856, 0.714796, 0.698855]; [ 0.855681,  0.345626, -0.385167]]);
+BSR_2 = Helper.cfToRealRot([[ 0.534727, -0.598345,  0.596699]; [0.082423, 0.739697, 0.667874]; [-0.840995, -0.307949,  0.444853]]);
 
-BSR_1 = Helper.deg2dcm(0, 0, 0);
-BSR_2 = Helper.deg2dcm(180, 0, 0);
-BSR_3 = Helper.deg2dcm(0, 0, 0);
-BSR_4 = Helper.deg2dcm(0, 0, 0);
+
+
 
 bs(1).origin = BS_1;
 bs(1).mat = BSR_1;
