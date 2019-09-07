@@ -182,6 +182,23 @@ classdef Helper
             A(:, [col2, col1]) = A(:, [col1, col2]);
         end
         
+        function BS_1 = cfToReal(BS_1)
+           
+            % BS_1 = [-2.61173797; 2.6828599; -1.73622894]
+
+            BS_1 = Helper.swapRows(BS_1, 1, 3);
+            BS_1 = Helper.swapRows(BS_1, 2, 3)
+
+
+            % BS_1 = [-1.73622894; -2.61173797; 2.6828599];
+
+            BS_1 = Helper.flipRow(BS_1, 1);
+            BS_1 = Helper.flipRow(BS_1, 2)
+
+
+            % BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
+        end
+        
         function [Sf_2, Sf_1, t_f, s_f, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
             D
             

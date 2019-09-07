@@ -63,22 +63,28 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 % BS_3 = [-1.759562; -4.505452; 2.635298];
 % BS_4 = [1.729562; 5.251678; 2.641019];
 
-% BS_1 = [-1.73622894; -2.61173797; 2.6828599];
-% BS_2 = [1.37233901; 2.37578106; 2.73936605];
-BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
-BS_2 = [-1.37233901; -2.37578106; 2.73936605];
+
+
+BS_1 = Helper.cfToReal([-2.61173797; 2.6828599; -1.73622894])
+BS_2 = Helper.cfToReal([ 2.37578106; 2.73936605; 1.37233901])
+
+
+BSR_1 = Helper.deg2dcm(0, 0, 0);
+BSR_2 = Helper.deg2dcm(180, 0, 0);
+BSR_3 = Helper.deg2dcm(0, 0, 0);
+BSR_4 = Helper.deg2dcm(0, 0, 0);
 
 bs(1).origin = BS_1;
-bs(1).mat = Helper.deg2dcm(0, 0, 0);
+bs(1).mat = BSR_1;
 
 bs(2).origin = BS_2;
-bs(2).mat = Helper.deg2dcm(180, 0, 0);
+bs(2).mat = BSR_2;
 
-bs(3).origin = BS_3;
-bs(3).mat = Helper.deg2dcm(0, 0, 0);
-
-bs(4).origin = BS_4;
-bs(4).mat = Helper.deg2dcm(0, 0, 0);
+% bs(3).origin = BS_3;
+% bs(3).mat = BSR_3;
+% 
+% bs(4).origin = BS_4;
+% bs(4).mat = BSR_4;
 
 
 detection(1).color = 'k';
@@ -273,7 +279,7 @@ for i = 1:length(detection)
     text(B(1), B(2), B(3), num2str(i), 'Color', 'r')
     
     if isfield(detection(i).bs, 'mat') && ~isempty(detection(i).bs.mat)
-        Helper.plotRotMat(B, detection(i).bs.mat, 0.5, 'b');
+        Helper.plotRotMat(B, detection(i).bs.mat, 0.5, 'g', 'b' ,'r'); %ref: https://wiki.bitcraze.io/doc:lighthouse:setup
     end
 end
 
