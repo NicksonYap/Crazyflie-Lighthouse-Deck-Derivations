@@ -59,6 +59,10 @@ classdef Helper
             
             R = Helper.planeRot(Helper.unit(a), zeros(3, 1), Helper.unit(b), zeros(3, 1) ); %equivalent, only if norm(a) == norm(b)
             return
+            
+            % test: 
+            %     a_ = inv(R) * b
+            %     b_ = R * a
         end
 
         function R = vectorRot(a, b)
@@ -362,7 +366,7 @@ classdef Helper
 
         end
         
-        function plotRotMat(Or, R, length, color)
+        function plotRotMat(Or, R, length, color_a, color_b, color_c)
             a = [1; 0; 0];
             b = [0; 1; 0];
             c = [0; 0; 1];
@@ -371,9 +375,9 @@ classdef Helper
             b_r = R*b*length
             c_r = R*c*length
             
-            quiver3(Or(1), Or(2), Or(3), a_r(1), a_r(2), a_r(3), color);
-            quiver3(Or(1), Or(2), Or(3), b_r(1), b_r(2), b_r(3), color);
-            quiver3(Or(1), Or(2), Or(3), c_r(1), c_r(2), c_r(3), color);
+            quiver3(Or(1), Or(2), Or(3), a_r(1), a_r(2), a_r(3), color_a);
+            quiver3(Or(1), Or(2), Or(3), b_r(1), b_r(2), b_r(3), color_b);
+            quiver3(Or(1), Or(2), Or(3), c_r(1), c_r(2), c_r(3), color_c);
             
             
 %             %plot square plane - ref: https://www.mathworks.com/matlabcentral/answers/317359-how-to-fill-a-3d-plot
