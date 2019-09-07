@@ -245,7 +245,7 @@ classdef Helper
          
             
             
-            %{
+%             %{
             
             A = [A, zeros(3,1), zeros(3,1)]; % cast to square matrix
             
@@ -265,9 +265,10 @@ classdef Helper
             A = [A, zeros(3,1), zeros(3,1)]; % cast to square matrix
             
             
-            %}
+%             %}
             
             
+            %{
 
             U = [-0.729786634; 0.681639731; -0.052715674]
             S = [0.986955404]
@@ -287,6 +288,7 @@ classdef Helper
             A_inv = A_inv(1,:) %only first row
             s_f = A_inv*B
             
+            %}
             
             
             
