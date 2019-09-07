@@ -278,14 +278,14 @@ hold on
 
 %% Plot Basestations
 
-for i = 1:length(detection)
-    B = detection(i).bs.origin;
+for i = 1:length(bs)
+    B = bs(i).origin;
     
     plot3(B(1), B(2), B(3), 'b^-'); % plot Base Station
     text(B(1), B(2), B(3), num2str(i), 'Color', 'r')
     
-    if isfield(detection(i).bs, 'mat') && ~isempty(detection(i).bs.mat)
-        Helper.plotRotMat(B, detection(i).bs.mat, 0.5, 'g', 'b' ,'r'); %ref: https://wiki.bitcraze.io/doc:lighthouse:setup
+    if isfield(bs(i), 'mat') && ~isempty(bs(i).mat)
+        Helper.plotRotMat(B, bs(i).mat, 0.5, 'g', 'b' ,'r'); %ref: https://wiki.bitcraze.io/doc:lighthouse:setup
     end
 end
 
