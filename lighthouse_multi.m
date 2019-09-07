@@ -42,11 +42,9 @@ tracker_center = [0; 0; 1]; % center of tracker
 
 %% Define Base Stations & Detections
 
-% plot_ray_length = 10;
-plot_ray_length = 5;
-
 % detection number 1 will serve as reference point in calculations 
 clear detection
+clear bs
 
 INTRODUCE_RAY_ERROR = false;
 % INTRODUCE_RAY_ERROR = true;
@@ -58,25 +56,17 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 
 % BS_1 = [0; 0; 10.000000]; % from the top % 1 BS, 8x8 from the top only with 0.01 degree error gives 100mm error
 % BS_1 = [0; 0; 2.641019]; % from the top % 1 BS, 8x8 from the top only with 0.01 degree error only gives 3mm error!
-% BS_1 = [-1.789562; 5.251678; 2.641019];
-% BS_2 = [1.734847; -4.475452; 2.665298];
-% BS_3 = [-1.759562; -4.505452; 2.635298];
-% BS_4 = [1.729562; 5.251678; 2.641019];
+BS_1 = [-1.789562; 5.251678; 2.641019];
+BS_2 = [1.734847; -4.475452; 2.665298];
+BS_3 = [-1.759562; -4.505452; 2.635298];
+BS_4 = [1.729562; 5.251678; 2.641019];
+
+plot_ray_length = 10;
 
 BSR_1 = Helper.deg2dcm(0, 0, 0);
 BSR_2 = Helper.deg2dcm(180, 0, 0);
 BSR_3 = Helper.deg2dcm(0, 0, 0);
 BSR_4 = Helper.deg2dcm(0, 0, 0);
-
-
-
-
-BS_1 = Helper.cfToReal([-2.61173797; 2.6828599; -1.73622894])
-BS_2 = Helper.cfToReal([ 2.37578106; 2.73936605; 1.37233901])
-
-BSR_1 = Helper.cfToRealRot([[-0.516858,  0.607955, -0.602701]; [0.025856, 0.714796, 0.698855]; [ 0.855681,  0.345626, -0.385167]]);
-BSR_2 = Helper.cfToRealRot([[ 0.534727, -0.598345,  0.596699]; [0.082423, 0.739697, 0.667874]; [-0.840995, -0.307949,  0.444853]]);
-
 
 
 
@@ -86,11 +76,11 @@ bs(1).mat = BSR_1;
 bs(2).origin = BS_2;
 bs(2).mat = BSR_2;
 
-% bs(3).origin = BS_3;
-% bs(3).mat = BSR_3;
-% 
-% bs(4).origin = BS_4;
-% bs(4).mat = BSR_4;
+bs(3).origin = BS_3;
+bs(3).mat = BSR_3;
+
+bs(4).origin = BS_4;
+bs(4).mat = BSR_4;
 
 
 detection(1).color = 'k';
@@ -136,19 +126,27 @@ end
 %% Real Data
 
 USE_REAL_RAY = false;
-% USE_REAL_RAY = true;
+USE_REAL_RAY = true;
 
 if USE_REAL_RAY
     clear detection
+    clear bs
 
     %somehow CF firmware orients basestations differently
-    % BS_1 = [-1.73622894; -2.61173797; 2.6828599];
-    % BS_2 = [1.37233901; 2.37578106; 2.73936605];
     BS_1 = [-2.61173797; 2.6828599; -1.73622894];
     BS_2 = [ 2.37578106; 2.73936605; 1.37233901;];
     
+    plot_ray_length = 5;
+
     BSR_1 = [[-0.516858,  0.607955, -0.602701]; [0.025856, 0.714796, 0.698855]; [ 0.855681,  0.345626, -0.385167]];
     BSR_2 = [[ 0.534727, -0.598345,  0.596699]; [0.082423, 0.739697, 0.667874]; [-0.840995, -0.307949,  0.444853]];
+
+
+    BS_1 = Helper.cfToReal(BS_1)
+    BS_2 = Helper.cfToReal(BS_2)
+
+    BSR_1 = Helper.cfToRealRot(BSR_1);
+    BSR_2 = Helper.cfToRealRot(BSR_2);
 
 
     bs(1).origin = BS_1;
@@ -183,24 +181,23 @@ if USE_REAL_RAY
     detection(1).sens = 0;
     
     detection(1).sens = 0;
-    detection(1).real_r = [0.798410177; -0.577826262; 0.169288218];
+    detection(1).real_r = Helper.cfToReal([0.798410177; -0.577826262; 0.169288218]);
     
 %     detection(1).bs = bs(1);
 %     detection(1).sens = 3;
-%     detection(1).real_r = [0.79735142; -0.581848264; 0.160261855];
+%     detection(1).real_r =  Helper.cfToReal([0.79735142; -0.581848264; 0.160261855]);
 
 %     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
-%     detection(1).real_r = [0.798819661; -0.577314794; 0.169101238];
+%     detection(1).real_r =  Helper.cfToReal([0.798819661; -0.577314794; 0.169101238]);
 
 %     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
-%     detection(1).real_r = [0.798809946; -0.577327847; 0.169102848];
+%     detection(1).real_r =  Helper.cfToReal([0.798809946; -0.577327847; 0.169102848]);
 
 %     detection(1).bs = bs(1);
 %     detection(1).sens = 0;
-%     detection(1).real_r = [0.776623249; -0.609121561; 0.160710543];
-
+%     detection(1).real_r =  Helper.cfToReal([0.776623249; -0.609121561; 0.160710543]);
 
 
 
@@ -210,23 +207,23 @@ if USE_REAL_RAY
     detection(2).sens = 2;
     
     detection(2).sens = 1;
-    detection(2).real_r = [-0.478063911; -0.568822145; -0.669249952];
+    detection(2).real_r = Helper.cfToReal([-0.478063911; -0.568822145; -0.669249952]);
 
 %     detection(2).bs = bs(2);
 %     detection(2).sens = 3;
-%     detection(2).real_r = [-0.47880125; -0.564612567; -0.672280788];
+%     detection(2).real_r =  Helper.cfToReal([-0.47880125; -0.564612567; -0.672280788]);
 
 %     detection(2).bs = bs(1);
 %     detection(2).sens = 2;
-%     detection(2).real_r = [0.799880087; -0.578143716; 0.16106534];
+%     detection(2).real_r =  Helper.cfToReal([0.799880087; -0.578143716; 0.16106534]);
 
 %     detection(2).bs = bs(1);
 %     detection(2).sens = 3;
-%     detection(2).real_r = [0.801220775; -0.576445818; 0.160486817];
+%     detection(2).real_r =  Helper.cfToReal([0.801220775; -0.576445818; 0.160486817]);
 
 %     detection(2).bs = bs(1);
 %     detection(2).sens = 3;
-%     detection(2).real_r = [0.778907955; -0.608527899; 0.151647255];
+%     detection(2).real_r =  Helper.cfToReal([0.778907955; -0.608527899; 0.151647255]);
 end
 
 
