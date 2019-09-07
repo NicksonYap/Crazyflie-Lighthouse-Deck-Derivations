@@ -160,7 +160,26 @@ classdef Helper
 
         end
         
+        function A = swapRows(A, row1, row2)
+            % ref: https://www.mathworks.com/matlabcentral/answers/318848-how-to-swap-rows-of-a-matrix-using-command-linalg-swaprow-a-1-2#answer_249208
+            A([row2, row1], :) = A([row1, row2], :);
+        end
+        
+        function A = flipRow(A, row)
+           A(row,:) = -1*A(row,:);
+        end
+        
+        function A = flipCol(A, col)
+           A(:,col) = -1*A(:,col);
+        end
+        
+        function A = swapCols(A, col1, col2)
+            % ref: https://www.mathworks.com/matlabcentral/answers/318848-how-to-swap-rows-of-a-matrix-using-command-linalg-swaprow-a-1-2#answer_249208
+            A(:, [col2, col1]) = A(:, [col1, col2]);
+        end
+        
         function [Sf_2, Sf_1, t_f, s_f, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
+            D
             
 %             D = R*s;
             w = B_2 - B_1;
