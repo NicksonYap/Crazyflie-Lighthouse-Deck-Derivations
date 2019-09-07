@@ -1,10 +1,10 @@
 %% Define Sensor Positions Relative to Tracker Center
 
-% sd_x = 3 / 100; % x-distance between sensors in Meters
-% sd_y = 1.5 / 100; % y-distance between sensors in Meters
+sd_x = 3 / 100; % x-distance between sensors in Meters
+sd_y = 1.5 / 100; % y-distance between sensors in Meters
 
-sd_x = 8 / 100; % x-distance between sensors in Meters
-sd_y = 8 / 100; % y-distance between sensors in Meters
+% sd_x = 8 / 100; % x-distance between sensors in Meters
+% sd_y = 8 / 100; % y-distance between sensors in Meters
 % 8x8 in single BS with 0.01 degree error gives at most 50mm error, however in 3x1.5, it's 330mm, 6 times the error
 
 S = [];
@@ -20,6 +20,7 @@ INTRODUCE_ORIENTATION_ERROR = false;
 
 % R_actual = Helper.deg2dcm(45, 45, 45); % degrees
 R_actual = Helper.deg2dcm(0, 0, 0); % degrees
+
 R_sampled = R_actual; % no error
 
 if INTRODUCE_ORIENTATION_ERROR
@@ -44,11 +45,13 @@ RANDOM_ERROR_DEGREES = 0.01; % 1 BS = 330mm, 2 BS = 290mm or 88mm ,4 BS = 1.7mm
 
 % BS_1 = [0; 0; 10.000000]; % from the top % 1 BS, 8x8 from the top only with 0.01 degree error gives 100mm error
 % BS_1 = [0; 0; 2.641019]; % from the top % 1 BS, 8x8 from the top only with 0.01 degree error only gives 3mm error!
-BS_1 = [-1.789562; 5.251678; 2.641019];
-BS_2 = [1.734847; -4.475452; 2.665298];
-BS_3 = [-1.759562; -4.505452; 2.635298];
-BS_4 = [1.729562; 5.251678; 2.641019];
+% BS_1 = [-1.789562; 5.251678; 2.641019];
+% BS_2 = [1.734847; -4.475452; 2.665298];
+% BS_3 = [-1.759562; -4.505452; 2.635298];
+% BS_4 = [1.729562; 5.251678; 2.641019];
 
+BS_1 = [-1.73622894; -2.61173797; 2.6828599];
+BS_2 = [1.37233901; 2.37578106; 2.73936605];
 
 detection(1).color = 'k';
 detection(1).B = BS_1;
@@ -58,7 +61,6 @@ if INTRODUCE_RAY_ERROR
 %     detection(1).r_error = Helper.deg2dcm(-0.1,0,0); % zeros if exactly on sensor
     detection(1).r_error = Helper.randDeg2Dcm(RANDOM_ERROR_DEGREES); % zeros if exactly on sensor
 end
-
 detection(2).color = 'r';
 detection(2).B = BS_2;
 detection(2).sens = 2;
@@ -89,7 +91,106 @@ if INTRODUCE_RAY_ERROR
 end
 
 
+%% Real Data
 
+USE_REAL_RAY = false;
+USE_REAL_RAY = true;
+
+if USE_REAL_RAY
+    clear detection
+
+    %somehow CF firmware orients basestations differently
+    % BS_1 = [-1.73622894; -2.61173797; 2.6828599];
+    % BS_2 = [1.37233901; 2.37578106; 2.73936605];
+    BS_1 = [-2.61173797; 2.6828599; -1.73622894];
+    BS_2 = [ 2.37578106; 2.73936605; 1.37233901;];
+
+
+    %so then the crazyflie should also orient differently
+    S = Helper.swapRows(S, 2, 3);
+    S = Helper.swapRows(S, 1, 3);
+    
+    S = Helper.swapCols(S, 1, 2);
+    S = Helper.swapCols(S, 3, 4);
+    
+    S = Helper.swapCols(S, 1, 3);
+    S = Helper.swapCols(S, 2, 4);
+   
+    
+    %attempt to correct the rotation
+
+%     R_actual = [0.999969661 -0.0066452031 -0.0040709218; 0.006622802 0.999962986 -0.00549162691; 0.00410726387 0.00546449935 0.999976695];
+%     R_actual = Helper.deg2dcm(90, 0, 90); % degrees
+%     R_sampled = R_actual; % no error
+
+
+%     tracker_center = ([-2.21150947; 2.39448023; -1.6517576] + [-2.19172335; 2.38026118; -1.65189958])/2; % center of tracker
+
+    detection(1).color = 'k';
+    detection(1).B = BS_1;
+    detection(1).sens = 0;
+    
+    detection(1).sens = 0;
+    detection(1).real_r = [0.798410177; -0.577826262; 0.169288218];
+    
+%     detection(1).B = BS_1;
+%     detection(1).sens = 3;
+%     detection(1).real_r = [0.79735142; -0.581848264; 0.160261855];
+
+%     detection(1).B = BS_1;
+%     detection(1).sens = 0;
+%     detection(1).real_r = [0.798819661; -0.577314794; 0.169101238];
+
+%     detection(1).B = BS_1;
+%     detection(1).sens = 0;
+%     detection(1).real_r = [0.798809946; -0.577327847; 0.169102848];
+
+%     detection(1).B = BS_1;
+%     detection(1).sens = 0;
+%     detection(1).real_r = [0.776623249; -0.609121561; 0.160710543];
+
+
+
+
+
+    detection(2).color = 'r';
+    detection(2).B = BS_2;
+    detection(2).sens = 2;
+    
+    detection(2).sens = 1;
+    detection(2).real_r = [-0.478063911; -0.568822145; -0.669249952];
+
+%     detection(2).B = BS_2;
+%     detection(2).sens = 3;
+%     detection(2).real_r = [-0.47880125; -0.564612567; -0.672280788];
+
+%     detection(2).B = BS_1;
+%     detection(2).sens = 2;
+%     detection(2).real_r = [0.799880087; -0.578143716; 0.16106534];
+
+%     detection(2).B = BS_1;
+%     detection(2).sens = 3;
+%     detection(2).real_r = [0.801220775; -0.576445818; 0.160486817];
+
+%     detection(2).B = BS_1;
+%     detection(2).sens = 3;
+%     detection(2).real_r = [0.778907955; -0.608527899; 0.151647255];
+end
+
+
+%% Pre-calculate sensor vectors
+
+% for j = 1:length(S)
+%     for i = 1:length(S)
+% %         if i ~= j
+%             fprintf('%d & %d \n',  j-1, i-1);
+%             s_1 = (S(:, j) - S(:, i))
+% %         end
+%     end
+% end
+% return
+
+%%
 
 SINGLE_BASESTATION = false;
 % SINGLE_BASESTATION = true;
@@ -175,21 +276,31 @@ end
 P_1 = tracker_center + R_actual * S(:, detection(1).sens + 1); % detection(1).sens as reference point
 
 for i = 1:length(detection)
-    % Artibary point on a Ray in World Frame (in Meters), to generate the Ray Vector
     
-    Rp = P_1 + detection(i).D_1_actual;
-
-    plot3(Rp(1), Rp(2), Rp(3), 'k.-'); % plot Artibary point on Ray
 
     % Unit Vector of Ray from Base Stations
     B = detection(i).B;
-    
-    detection(i).Rp = Rp;
-    detection(i).Rp_dist = norm(Rp - B);
-    
-    r = (Rp - B) / norm(Rp - B);
+        
+    if ~USE_REAL_RAY
+        % Artibary point on a Ray in World Frame (in Meters), to generate the Ray Vector
+        Rp = P_1 + detection(i).D_1_actual;
 
-    r = detection(i).r_error * r;
+        plot3(Rp(1), Rp(2), Rp(3), 'k.-'); % plot Artibary point on Ray
+
+        detection(i).Rp = Rp;
+        detection(i).Rp_dist = norm(Rp - B);
+        
+        r = (Rp - B) / norm(Rp - B);
+    else
+%     if ~isfield(detection(i), 'r') || isempty(detection(i).r)
+        r = detection(i).real_r; %use pre-defined
+    end
+    
+
+    if isfield(detection(i), 'r_error') && ~isempty(detection(i).r_error)
+        r = detection(i).r_error * r; %apply error
+    end
+    
     detection(i).r = r;
     
     % Simulated End of Ray
@@ -264,13 +375,17 @@ for i = 2:length(detection)
     end
 end
 
-d_1_mean = mean(d_1_suggestions, 2);
-d_1_diff = norm(d_1_mean - detection(1).Rp_dist) * 1000;
 
 %  Rp_mean = detection(1).B + d_1_mean * detection(1).r;
 %  plot3(Rp_mean(1), Rp_mean(2), Rp_mean(3), 'o', 'Color', detection(1).color); % plot sensor_on_ray_1
     
-fprintf('Mean Distance on Ray 1: %f with error %f mm\n', d_1_mean, d_1_diff);
+d_1_mean = mean(d_1_suggestions, 2);
+if ~USE_REAL_RAY
+    d_1_diff = norm(d_1_mean - detection(1).Rp_dist) * 1000;
+    fprintf('Mean Distance on Ray 1: %f with error %f mm\n', d_1_mean, d_1_diff);
+else
+    fprintf('Mean Distance on Ray 1: %f\n', d_1_mean);
+end
     
 for i = 2:length(detection)
    
@@ -278,30 +393,40 @@ for i = 2:length(detection)
 
     Rpx_dist = Helper.rayDistFromRayDist(detection(i).B, detection(1).B, detection(i).r, detection(1).r, D_1, d_1_mean);
  
-    Rpx_dist_diff = norm(Rpx_dist - detection(i).Rp_dist) * 1000;
 
 %     Rpx = detection(i).B + Rpx_dist * detection(i).r;
 %     plot3(Rpx(1), Rpx(2), Rpx(3), 'o', 'Color', detection(i).color); % plot sensor_on_ray_1
 
-    fprintf('Mean Distance on Ray %d: %f with error %f mm\n', i, Rpx_dist, Rpx_dist_diff);
+    if ~USE_REAL_RAY
+        Rpx_dist_diff = norm(Rpx_dist - detection(i).Rp_dist) * 1000;
+        fprintf('Mean Distance on Ray %d: %f with error %f mm\n', i, Rpx_dist, Rpx_dist_diff);
+    else
+        fprintf('Mean Distance on Ray %d: %f\n', i, Rpx_dist);
+    end
 end
 
 
 
 Sf_1_mean = mean(Sf_1_suggestions, 2);
-Sf_1_diff = norm(Sf_1_mean - detection(1).Rp) * 1000; % same  as d_1_diff
 
-
+if ~USE_REAL_RAY
+    Sf_1_diff = norm(Sf_1_mean - detection(1).Rp) * 1000; % same  as d_1_diff
+else
+    Sf_1_diff = 'n/a';
+end
 
 
 Pc_mean = mean(Pc_suggestions, 2);
-Pc_diff = norm(Pc_mean - tracker_center) * 1000;
-
-
 plot3(Pc_mean(1), Pc_mean(2), Pc_mean(3), '^-', 'Color', 'c');
 fprintf('Mean Tracker Center:\n');
 disp(Pc_mean);
-fprintf('Mean Tracker Center error %f mm\n',  Pc_diff);
+
+
+if ~USE_REAL_RAY
+    Pc_diff = norm(Pc_mean - tracker_center) * 1000;
+    fprintf('Mean Tracker Center error %f mm\n',  Pc_diff);
+end
+
 
 %% Plot End
 
