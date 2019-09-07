@@ -26,9 +26,11 @@ S = [S, [sd_x / 2; - sd_y / 2; 0]]; % Sensor 3
 INTRODUCE_ORIENTATION_ERROR = false;
 % INTRODUCE_ORIENTATION_ERROR = true;
 
-% R_actual = Helper.deg2dcm(45, 45, 45); % degrees
-% R_actual = Helper.deg2dcm(0, 0, -45); % degrees
 R_actual = Helper.deg2dcm(0, 0, 0); % degrees
+% R_actual = Helper.deg2dcm(45, 45, 45); % degrees
+% R_actual = Helper.deg2dcm(0, 0, 45); % degrees roll left
+% R_actual = Helper.deg2dcm(0, -45, 0); % degrees pitch forward
+% R_actual = Helper.deg2dcm(-45, 0, 0); % degrees yaw left
 
 R_sampled = R_actual; % no error
 
@@ -109,7 +111,7 @@ end
 %% Real Data
 
 USE_REAL_RAY = false;
-% USE_REAL_RAY = true;
+USE_REAL_RAY = true;
 
 if USE_REAL_RAY
     clear detection
@@ -119,6 +121,9 @@ if USE_REAL_RAY
     % BS_2 = [1.37233901; 2.37578106; 2.73936605];
     BS_1 = [-2.61173797; 2.6828599; -1.73622894];
     BS_2 = [ 2.37578106; 2.73936605; 1.37233901;];
+    
+    BSR_1 = [[-0.516858,  0.607955, -0.602701]; [0.025856, 0.714796, 0.698855]; [ 0.855681,  0.345626, -0.385167]];
+    BSR_2 = [[ 0.534727, -0.598345,  0.596699]; [0.082423, 0.739697, 0.667874]; [-0.840995, -0.307949,  0.444853]];
 
 
     %so then the crazyflie should also orient differently
@@ -143,6 +148,7 @@ if USE_REAL_RAY
 
     detection(1).color = 'k';
     detection(1).B = BS_1;
+    detection(1).BR = BSR_1;
     detection(1).sens = 0;
     
     detection(1).sens = 0;
@@ -170,6 +176,7 @@ if USE_REAL_RAY
 
     detection(2).color = 'r';
     detection(2).B = BS_2;
+    detection(2).BR = BSR_2;
     detection(2).sens = 2;
     
     detection(2).sens = 1;
@@ -246,8 +253,10 @@ for i = 1:length(detection)
     
     plot3(B(1), B(2), B(3), 'b^-'); % plot Base Station
     text(B(1), B(2), B(3), num2str(i), 'Color', 'r')
-
-    Helper.plotRotMat(B, R_actual, 0.5, 'b');
+    
+    if isfield(detection(i), 'BR') && ~isempty(detection(i).BR)
+        Helper.plotRotMat(B, detection(i).BR, 0.5, 'b');
+    end
 end
 
 for i = 2:length(detection)
