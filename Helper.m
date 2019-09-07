@@ -235,6 +235,20 @@ classdef Helper
             % return
         end
         
+        function cfExportRot(R)
+            
+%             fprintf('{');
+            for i = 1:size(R, 1)
+                fprintf('{');
+                for j = 1:size(R, 2)
+                    fprintf('%.6f, ', R(i, j));
+                end
+                fprintf('}, ');
+            end
+%             fprintf('},');
+            fprintf('\n');
+        end
+        
         function [Sf_2, Sf_1, t_f, s_f, segment_error] = bestFitBetweenRays(B_2, B_1, v, u, D)
             D
             
