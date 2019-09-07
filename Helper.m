@@ -200,9 +200,13 @@ classdef Helper
             % BS_1 = [ 1.73622894;  2.61173797; 2.6828599];
         end
         
+        function R = rotOrthonormalize(R)
+%             R_1 = R_1/norm(R_1); % does not work properly
+            R = quat2rotm(quatnormalize(rotm2quat(R))) % Orthonormalize - ref: https://www.codefull.net/2017/07/orthonormalize-a-rotation-matrix/
+        end
+        
         function R_2 = cfToRealRot(R_1)
-%             R_1 = R_1/norm(R_1); %make sure normalized
-            R_1 = quat2rotm(quatnormalize(rotm2quat(R_1))) % Orthonormalize - ref: https://www.codefull.net/2017/07/orthonormalize-a-rotation-matrix/
+            R_1 = Helper.rotOrthonormalize(R_1);
             
             a = [1; 0; 0];
             b = [0; 1; 0];
@@ -221,10 +225,13 @@ classdef Helper
             R_2_xy = Helper.planeRot(a, b, a_r, b_r);
             R_2_yz = Helper.planeRot(b, c, b_r, c_r);
             
-            R_2(:,1) = R_2_xy(:,1)
-            R_2(:,2) = R_2_xy(:,2)
-%             R_2(:,2) = R_2_yx(:,2)
-            R_2(:,3) = R_2_yz(:,3)
+            R_2(:,1) = R_2_xy(:,1);
+            R_2(:,2) = R_2_xy(:,2);
+%             R_2(:,2) = R_2_yx(:,2);
+            R_2(:,3) = R_2_yz(:,3);
+            
+            
+            R_2 = Helper.rotOrthonormalize(R_2);
             % return
         end
         
