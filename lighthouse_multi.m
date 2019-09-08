@@ -126,7 +126,7 @@ end
 %% Real Data
 
 USE_REAL_RAY = false;
-USE_REAL_RAY = true;
+% USE_REAL_RAY = true;
 
 if USE_REAL_RAY
     clear detection
@@ -177,11 +177,20 @@ if USE_REAL_RAY
 %     tracker_center = ([-2.21150947; 2.39448023; -1.6517576] + [-2.19172335; 2.38026118; -1.65189958])/2; % center of tracker
 
     detection(1).color = 'k';
+    detection(1).r_color = 'k';
     detection(1).bs = bs(1);
     detection(1).sens = 0;
     
+%     detection(1).bs = bs(1);
+%     detection(1).sens = 0;
+%     detection(1).real_r = [-0.167785019; -0.79384625; -0.584514201];
+    
+    detection(1).bs = bs(1);
     detection(1).sens = 0;
-    detection(1).real_r = Helper.cfToReal([0.798410177; -0.577826262; 0.169288218]);
+    detection(1).real_r = [-0.253878802; -0.858142138; -0.446248978];
+    
+%     detection(1).sens = 0;
+%     detection(1).real_r = Helper.cfToReal([0.798410177; -0.577826262; 0.169288218]);
     
 %     detection(1).bs = bs(1);
 %     detection(1).sens = 3;
@@ -203,11 +212,20 @@ if USE_REAL_RAY
 
 
     detection(2).color = 'r';
+    detection(1).r_color = 'r';
     detection(2).bs = bs(2);
     detection(2).sens = 2;
     
+%     detection(2).bs = bs(1);
+%     detection(2).sens = 1;
+%     detection(2).real_r = [-0.166870311; -0.795328796; -0.582758069];
+
+    detection(2).bs = bs(1);
     detection(2).sens = 1;
-    detection(2).real_r = Helper.cfToReal([-0.478063911; -0.568822145; -0.669249952]);
+    detection(2).real_r = [-0.254679173; -0.859970927; -0.442254543];
+
+%     detection(2).sens = 1;
+%     detection(2).real_r = Helper.cfToReal([-0.478063911; -0.568822145; -0.669249952]);
 
 %     detection(2).bs = bs(2);
 %     detection(2).sens = 3;
@@ -358,7 +376,14 @@ for i = 1:length(detection)
     % Simulated End of Ray
     Ray = plot_ray_length * r;
 
-    quiver3(B(1), B(2),B(3), Ray(1), Ray(2), Ray(3), 'k'); % plot Rays
+    if isfield(detection(i), 'r_color') && ~isempty(detection(i).r_color)
+        r_color = detection(i).r_color;
+    else
+        r_color = 'k';
+    end
+    
+    
+    quiver3(B(1), B(2),B(3), Ray(1), Ray(2), Ray(3), r_color); % plot Rays
 end
 
 
@@ -407,6 +432,7 @@ for i = 2:length(detection)
     Pf_2 = Pf + D_1 / 2;
 
     Pc = Pf_1 - S(:, detection(1).sens + 1);
+%     Pc = Pf_2 - S(:, detection(i).sens + 1);
             
 %     diff_center = norm(Pc - tracker_center) * 1000 ;
             
